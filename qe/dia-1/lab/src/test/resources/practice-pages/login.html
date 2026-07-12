@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/login
+     DUEÑO: D1 (produce el archivo COMPLETO); lo exigen también los
+     ejercicios de D2 (MP-2, MP-3, MP-4, Integrador 1-4) y D3 (MP-1).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - h2 con texto exacto "Login Page"                       (D1 test 3)
+       - input username con id="username"                       (D2 obj 1)
+       - input password con name="password" y type="password"   (D2 obj 2)
+       - botón submit SIN id, con class "radius"                (D2 obj 3 y MP-4)
+       - #flash presente en el DOM con clase de estado
+         success/error (oculto hasta el submit)                 (D2 obj 4)
+       - exactamente DOS <input> en la página                   (D2 MP-3: locator ambiguo)
+       - credenciales válidas: tomsmith / SuperSecretPassword!  (D3 MP-1)
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  .subheader { font-weight: normal; color: #555; }
+  .row { margin-bottom: 1rem; }
+  label { display: block; font-weight: 600; margin-bottom: .25rem; }
+  input[type="text"], input[type="password"] {
+    width: 320px; max-width: 100%; padding: .5rem .6rem;
+    border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; }
+  button.radius { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+                  padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; }
+  .flash { width: 420px; max-width: 100%; padding: .8rem 1rem; border-radius: 4px;
+           color: #fff; margin-bottom: 1rem; }
+  .flash.success { background: #2c6e49; }
+  .flash.error   { background: #c0392b; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h2>Login Page</h2>
+  <h4 class="subheader" data-testid="subheader">This is where you can log into the secure area.
+    Enter <em>tomsmith</em> for the username and <em>SuperSecretPassword!</em> for the password.</h4>
+
+  <!-- #flash existe en el DOM desde la carga (lo localizan los ejercicios de D2)
+       pero se muestra hasta que hay un submit, como en the-internet. -->
+  <div id="flash" class="flash success" style="display:none">You logged into a secure area!</div>
+
+  <form id="login" name="login">
+    <div class="row">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="off">
+    </div>
+    <div class="row">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="off">
+    </div>
+    <!-- OJO: este botón NO tiene id a propósito (D2 obj 3: CSS button[type='submit']) -->
+    <button class="radius" type="submit">Login</button>
+  </form>
+
+  <footer>Espejo local de the-internet.herokuapp.com/login — curso QE</footer>
+
+<script>
+(function () {
+  'use strict';
+  var form = document.getElementById('login');
+  var flash = document.getElementById('flash');
+
+  // Funciona igual con click al botón que con element.submit() (D3 MP-1).
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var usuario = document.getElementById('username').value;
+    var clave = document.getElementById('password').value;
+    if (usuario !== 'tomsmith') {
+      mostrar('Your username is invalid!', 'error');
+    } else if (clave !== 'SuperSecretPassword!') {
+      mostrar('Your password is invalid!', 'error');
+    } else {
+      mostrar('You logged into a secure area!', 'success');
+    }
+  });
+
+  function mostrar(texto, tipo) {
+    flash.textContent = texto;
+    flash.className = 'flash ' + tipo;   // clases de estado: success | error (D2 obj 4)
+    flash.style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>

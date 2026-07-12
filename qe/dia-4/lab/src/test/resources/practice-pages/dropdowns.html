@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/dropdown
+     MÁS un dropdown CUSTOM que solo existe en local. DUEÑO: D3 (MP-3).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - <select id="dropdown"> idéntico a the-internet:
+         placeholder "Please select an option" (disabled) +
+         "Option 1" (value="1") + "Option 2" (value="2")
+         → para la clase Select: byVisibleText / byValue / byIndex
+       - dropdown custom (div+ul SIN <select>): patrón de 2 pasos —
+         click en #custom-trigger para abrir + click a la opción
+         (li por texto); la selección queda en el texto del trigger
+         y en #custom-seleccion ("Seleccionaste: <opción>")
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  select { font-size: 1rem; padding: .4rem .5rem; min-width: 260px; }
+  .dropdown-custom { position: relative; width: 260px; }
+  #custom-trigger { width: 100%; text-align: left; background: #fff; color: #2b2b2b;
+                    border: 1px solid #bbb; border-radius: 4px; padding: .5rem .6rem;
+                    font-size: 1rem; cursor: pointer; }
+  #custom-opciones { list-style: none; margin: .25rem 0 0; padding: 0;
+                     position: absolute; width: 100%; background: #fff;
+                     border: 1px solid #bbb; border-radius: 4px; z-index: 10;
+                     box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+  #custom-opciones li { padding: .5rem .6rem; cursor: pointer; }
+  #custom-opciones li:hover { background: #eef4f1; }
+  #custom-seleccion { font-weight: 600; color: #2c6e49; min-height: 1.5rem; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>Dropdown List</h3>
+  <select id="dropdown">
+    <option value="" disabled selected>Please select an option</option>
+    <option value="1">Option 1</option>
+    <option value="2">Option 2</option>
+  </select>
+
+  <h3>Dropdown custom (solo local — sin &lt;select&gt;, como el 80% de la web moderna)</h3>
+  <div class="dropdown-custom" data-testid="dropdown-custom">
+    <button id="custom-trigger" data-testid="custom-trigger"
+            aria-haspopup="listbox" aria-expanded="false">Selecciona un color</button>
+    <ul id="custom-opciones" role="listbox" style="display:none">
+      <li role="option" data-value="rojo">Rojo</li>
+      <li role="option" data-value="verde">Verde</li>
+      <li role="option" data-value="azul">Azul</li>
+    </ul>
+  </div>
+  <p id="custom-seleccion" data-testid="custom-seleccion"></p>
+
+  <footer>Espejo local de the-internet.herokuapp.com/dropdown (+ custom) — curso QE</footer>
+
+<script>
+(function () {
+  'use strict';
+  var trigger = document.getElementById('custom-trigger');
+  var opciones = document.getElementById('custom-opciones');
+
+  // Paso 1 del patrón: abrir/cerrar la lista.
+  trigger.addEventListener('click', function () {
+    var abierto = opciones.style.display === 'block';
+    opciones.style.display = abierto ? 'none' : 'block';
+    trigger.setAttribute('aria-expanded', String(!abierto));
+  });
+
+  // Paso 2 del patrón: click a la opción (los tests la localizan por texto).
+  Array.prototype.forEach.call(opciones.querySelectorAll('li'), function (li) {
+    li.addEventListener('click', function () {
+      trigger.textContent = li.textContent;
+      document.getElementById('custom-seleccion').textContent =
+        'Seleccionaste: ' + li.textContent;
+      opciones.style.display = 'none';
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+</script>
+</body>
+</html>

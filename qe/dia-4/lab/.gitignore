@@ -1,0 +1,19 @@
+# Build (Maven / Java)
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Selenium Manager cachea aquí los drivers descargados (no es fuente del repo)
+.cache/selenium/
+
+# Allure (resultados y reporte generado; el CLI se descarga aparte)
+.allure/
+allure-results/
+allure-report/

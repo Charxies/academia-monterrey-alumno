@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- spring-boot-starter-parent: gestiona las versiones de todas las dependencias de Spring (por
+         eso abajo no llevan <version>). Línea 3.5.x FIJADA para toda la S2; la pareja 3.5.x +
+         springdoc 2.8.9 ya está reconciliada (punto de dolor 7). -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/> <!-- lo busca en el repositorio, no en un pom padre local -->
+    </parent>
+
+    <groupId>com.taskflow</groupId>
+    <artifactId>taskflow-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>taskflow-api</name>
+    <description>TaskFlow API - S2D3 (starter): CRUD completo con DTOs, validacion, advice y Swagger</description>
+
+    <properties>
+        <!-- Java 21: seleccionado explícito en el wizard (no el default del sitio). -->
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- spring-boot-starter-web: Tomcat embebido + Spring MVC + Jackson. Viene desde D2. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-validation: ya ACTIVA en el starter (se explica en AM-2). Trae
+             Hibernate Validator (jakarta.validation). Es dependencia APARTE desde Boot 2.3: sin ella,
+             @NotBlank/@Size compilan pero NO validan — silencio total (punto de dolor 1). El checklist
+             de arranque verifica que esté presente antes de la primera práctica de validación. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- springdoc-openapi (Swagger UI): SE ACTIVA EN MP-8. Descomenta este bloque para tener
+             /swagger-ui.html y /v3/api-docs. Versión FIJADA a 2.8.9 (compatible con Boot 3.5.x);
+             NO subir "a la última" sin la matriz de compatibilidad de springdoc.org (punto de dolor 7).
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+        -->
+
+        <!-- spring-boot-starter-test: JUnit 5 + AssertJ + Mockito + spring-test (MockMvc). scope test. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- spring-boot-maven-plugin: 'mvn spring-boot:run' arranca la app; empaqueta el jar
+                 ejecutable. Hereda su config del parent. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

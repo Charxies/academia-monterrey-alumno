@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Mismo parent que taskflow-api; aqui el starter es WEBFLUX (Netty), no web (Tomcat). -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.taskflow.demo</groupId>
+    <artifactId>flux-reactivo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>flux-reactivo</name>
+    <description>Demo AM-1 (S3D5): el gemelo reactivo. GET /tareas (Flux, Mono.delay) + /tareas/stream (SSE).</description>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- spring-boot-starter-webflux: Netty + WebFlux (Mono/Flux). Pocos threads del event loop
+             que NUNCA se bloquean: atienden el siguiente evento mientras la "BD" responde. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

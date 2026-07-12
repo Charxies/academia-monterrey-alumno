@@ -1,0 +1,271 @@
+{
+  "info": {
+    "name": "TaskFlow - Datos de demo (siembra el guion)",
+    "description": "Siembra el ESCENARIO DE LA DEMO (MP-6, ERR-3). Un 'docker compose up' con volumen nuevo trae SOLO la semilla generica del DataSeeder (admin/ana/luis + un par de proyectos, guard count()==0); el proyecto 'Sprint demo' y las tareas de la historia NO estan hasta que corres ESTA coleccion. Uso: Run Collection en orden (0 -> 1 -> 2 -> 3). La ultima carpeta VERIFICA con un GET (el checklist pre-demo lo exige). Variables: {{base_url}} = compose local o la URL de AWS; {{token}} y {{sprintProjectId}} se llenan solos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080", "type": "string", "description": "Compose local. Para AWS: cambia a http://<EC2>:8080 (mismo guion, solo cambia la URL)." },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "sprintProjectId", "value": "", "type": "string" },
+    { "key": "task2Id", "value": "", "type": "string" },
+    { "key": "task3Id", "value": "", "type": "string" },
+    { "key": "task5Id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "0 - Setup (usuarios + login)",
+      "description": "Los usuarios de la historia (ana/luis/admin) ya vienen sembrados por el DataSeeder bajo el perfil docker. Los register de aqui son IDEMPOTENTES (toleran 409 si el usuario ya existe): sirven por si corres contra un entorno donde no se sembraron.",
+      "item": [
+        {
+          "name": "POST Register ana (201 o 409)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"ana\",\n  \"email\": \"ana@taskflow.dev\",\n  \"password\": \"ana123\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] },
+            "description": "Idempotente: 201 si es nuevo, 409 si ya existe (seed). Ambos son OK para la siembra."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"register ana 201 o 409\", function () {",
+              "    pm.expect([201, 409]).to.include(pm.response.code);",
+              "});"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Register luis (201 o 409)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"luis\",\n  \"email\": \"luis@taskflow.dev\",\n  \"password\": \"luis123\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] },
+            "description": "Idempotente (201 o 409). luis es el assignee de un par de tareas del escenario."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"register luis 201 o 409\", function () {",
+              "    pm.expect([201, 409]).to.include(pm.response.code);",
+              "});"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Login ana (setea {{token}})",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"ana\",\n  \"password\": \"ana123\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] },
+            "description": "ana es la owner del proyecto de la demo (el owner sale del JWT). Guarda {{token}} para el resto."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"login 200\", function () { pm.response.to.have.status(200); });",
+              "pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ] } }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "1 - Crear el escenario (proyecto + 5 tareas)",
+      "description": "Crea el proyecto 'Sprint demo' (owner = ana, del token) y 5 tareas con prioridad/assignee variados. Los ids se guardan en variables para ajustar estados en la carpeta 2.",
+      "item": [
+        {
+          "name": "POST Project 'Sprint demo' (setea {{sprintProjectId}})",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sprint demo\",\n  \"description\": \"El proyecto de la demo final v3.0 (datos del guion)\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects", "host": ["{{base_url}}"], "path": ["projects"] },
+            "description": "201 + Location. El ownerId de la respuesta es el id de ana (owner del token). Guarda su id."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"proyecto creado 201\", function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set(\"sprintProjectId\", pm.response.json().id);",
+              "console.log(\"Sprint demo id = \" + pm.response.json().id);"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Tarea 1 - Planificar el sprint (TODO, HIGH, ana)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Planificar el sprint\",\n  \"description\": \"Backlog y objetivos de la iteracion\",\n  \"priority\": \"HIGH\",\n  \"assigneeId\": 1,\n  \"dueDate\": \"2099-12-31\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "Nace en TODO. assigneeId=1 (ana). Se queda en TODO."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"tarea creada 201\", function () { pm.response.to.have.status(201); });"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Tarea 2 - Disenar API de comentarios (MED, luis) -> {{task2Id}}",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Disenar la API de comentarios\",\n  \"description\": \"Feature candidata de S5\",\n  \"priority\": \"MED\",\n  \"assigneeId\": 2,\n  \"dueDate\": \"2099-12-31\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "assigneeId=2 (luis). En la carpeta 2 pasa a IN_PROGRESS."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"tarea creada 201\", function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set(\"task2Id\", pm.response.json().id);"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Tarea 3 - Configurar el pipeline CI (HIGH, ana) -> {{task3Id}}",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Configurar el pipeline CI\",\n  \"description\": \"3 jobs: test, build-and-push, deploy\",\n  \"priority\": \"HIGH\",\n  \"assigneeId\": 1,\n  \"dueDate\": \"2099-12-31\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "assigneeId=1 (ana) -> TIENE responsable, asi que en la carpeta 2 SI puede pasar a DONE."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"tarea creada 201\", function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set(\"task3Id\", pm.response.json().id);"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Tarea 4 - Escribir la documentacion (TODO, LOW, SIN assignee)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Escribir la documentacion\",\n  \"description\": \"README + notas de release\",\n  \"priority\": \"LOW\",\n  \"assigneeId\": null,\n  \"dueDate\": \"2099-12-31\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "SIN assignee (null): se queda en TODO. Si intentaras pasarla a DONE -> 422 (regla del capstone). Util para mostrar el 422 en la demo."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"tarea creada 201\", function () { pm.response.to.have.status(201); });"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "POST Tarea 5 - Revisar seguridad JWT (MED, luis) -> {{task5Id}}",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Revisar seguridad JWT\",\n  \"description\": \"401 vs 403, expiracion del token\",\n  \"priority\": \"MED\",\n  \"assigneeId\": 2,\n  \"dueDate\": \"2099-12-31\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "assigneeId=2 (luis). En la carpeta 2 pasa a IN_PROGRESS."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"tarea creada 201\", function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set(\"task5Id\", pm.response.json().id);"
+            ] } }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2 - Ajustar estados (variedad TODO/IN_PROGRESS/DONE)",
+      "description": "Deja el tablero con estados variados para que la demo se vea real.",
+      "item": [
+        {
+          "name": "PATCH Tarea 2 -> IN_PROGRESS",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/tasks/{{task2Id}}/status", "host": ["{{base_url}}"], "path": ["tasks", "{{task2Id}}", "status"] },
+            "description": "200. La tarea 2 queda EN PROGRESO."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"200\", function () { pm.response.to.have.status(200); });"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "PATCH Tarea 3 -> DONE (tiene assignee, pasa)",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"DONE\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/tasks/{{task3Id}}/status", "host": ["{{base_url}}"], "path": ["tasks", "{{task3Id}}", "status"] },
+            "description": "200: la tarea 3 tiene assignee (ana), asi que DONE es valido. (Sin assignee seria 422.)"
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"200\", function () { pm.response.to.have.status(200); });"
+            ] } }
+          ],
+          "response": []
+        },
+        {
+          "name": "PATCH Tarea 5 -> IN_PROGRESS",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{base_url}}/tasks/{{task5Id}}/status", "host": ["{{base_url}}"], "path": ["tasks", "{{task5Id}}", "status"] },
+            "description": "200. La tarea 5 queda EN PROGRESO."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"200\", function () { pm.response.to.have.status(200); });"
+            ] } }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3 - Verificar (el GET del checklist pre-demo)",
+      "description": "El checklist pre-demo EXIGE verificar los datos con un GET antes de presentar. Aqui esta.",
+      "item": [
+        {
+          "name": "GET Tareas de 'Sprint demo' (deben ser 5)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/projects/{{sprintProjectId}}/tasks", "host": ["{{base_url}}"], "path": ["projects", "{{sprintProjectId}}", "tasks"] },
+            "description": "Confirma que el escenario esta sembrado: 5 tareas bajo el proyecto de la demo, con estados variados."
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test(\"200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"al menos 5 tareas en Sprint demo\", function () {",
+              "    pm.expect(pm.response.json().length).to.be.at.least(5);",
+              "});",
+              "console.log(\"Sprint demo (\" + pm.collectionVariables.get(\"sprintProjectId\") + \") tiene \" + pm.response.json().length + \" tareas\");"
+            ] } }
+          ],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

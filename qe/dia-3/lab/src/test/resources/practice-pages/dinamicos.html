@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/add_remove_elements/
+     DUEÑO: D2 (MP-5, MP-7, Integrador obj 12-14).
+     El DOM muta de forma SÍNCRONA a propósito: los locators de D2
+     se aprenden sin el ruido de la sincronización (las esperas son D3).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - botón "Add Element" SIN id, con onclick="addElement()"
+         (localizable por texto en XPath o por CSS de atributo)   (D2 obj 12)
+       - contenedor #elements VACÍO al inicio; cada Add agrega un
+         <button class="added-manually">Delete</button>           (D2 obj 13, MP-5)
+       - contador con data-testid="contador-elementos"            (D2 obj 14)
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  button { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+           padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; margin: .25rem .5rem .25rem 0; }
+  #elements button.added-manually { background: #c0392b; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>Add/Remove Elements</h3>
+  <button onclick="addElement()">Add Element</button>
+  <p>Elementos agregados: <span id="contador" data-testid="contador-elementos">0</span></p>
+  <div id="elements"></div>
+
+  <footer>Espejo local de the-internet.herokuapp.com/add_remove_elements — curso QE</footer>
+
+<script>
+'use strict';
+// Mutación SÍNCRONA del DOM (sin setTimeout): así lo exige la spec de D2 —
+// hoy se aprende a LOCALIZAR; las esperas llegan en D3.
+function addElement() {
+  var btn = document.createElement('button');
+  btn.className = 'added-manually';
+  btn.textContent = 'Delete';
+  btn.onclick = function () { deleteElement(btn); };
+  document.getElementById('elements').appendChild(btn);
+  actualizarContador();
+}
+
+function deleteElement(btn) {
+  btn.parentNode.removeChild(btn);
+  actualizarContador();
+}
+
+function actualizarContador() {
+  document.getElementById('contador').textContent =
+    document.querySelectorAll('#elements button').length;
+}
+</script>
+</body>
+</html>

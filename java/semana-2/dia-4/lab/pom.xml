@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- spring-boot-starter-parent: el "padre" que GESTIONA las versiones de todas las dependencias
+         de Spring (por eso abajo no llevan <version>) y la config de plugins. Línea 3.5.x FIJADA
+         para toda la S2. -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/> <!-- lo busca en el repositorio, no en un pom padre local -->
+    </parent>
+
+    <groupId>com.taskflow</groupId>
+    <artifactId>taskflow-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>taskflow-api</name>
+    <description>TaskFlow API - S2D4: persistencia con Spring Data JPA y H2 (archivo en runtime)</description>
+
+    <properties>
+        <!-- Java 21: seleccionado explícito en el wizard (no el default del sitio). -->
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- spring-boot-starter-web: Tomcat embebido + Spring MVC (@RestController/@GetMapping) +
+             Jackson (objeto <-> JSON). Viene desde D2. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-validation: Hibernate Validator (jakarta.validation). Viene de D3. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-data-jpa: AGREGADA HOY (S2D4). Trae JPA (jakarta.persistence),
+             Hibernate como implementación y Spring Data JPA (JpaRepository + los proxies de runtime).
+             Se LEE en MP-1 y se explica; no se pelea. OJO: NUNCA importamos org.hibernate.* — solo
+             jakarta.persistence.* (programar contra la spec, como la interfaz TaskRepository). -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- h2: AGREGADA HOY. La base de datos del día. scope runtime porque el código nunca importa
+             org.h2.* (el driver se carga solo por ServiceLoader al abrir jdbc:h2:...). En runtime va
+             en modo ARCHIVO (jdbc:h2:file:./data/taskflow) y en los tests en MEMORIA (perfil test). -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- STRETCH (swap a PostgreSQL): DESCOMENTAR para el anexo guiado del integrador. Con el
+             contenedor de Docker levantado y el perfil 'postgres' activo, la app corre igual: cero
+             cambios en entidades/repos/servicios. Eso compró JPA. Comentada por default para que el
+             día principal (H2 archivo) no arrastre un driver que no usa.
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        -->
+
+        <!-- springdoc-openapi: Swagger UI + /v3/api-docs. Versión FIJADA a 2.8.9 (compatible con
+             Boot 3.5.x). Viene de D3. -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+
+        <!-- spring-boot-starter-test: JUnit 5 + AssertJ + Mockito + spring-test (MockMvc). scope test.
+             Trae también el soporte de @DataJpaTest y TestEntityManager (spring-boot-test-autoconfigure). -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- spring-boot-maven-plugin: 'mvn spring-boot:run' arranca la app; empaqueta el jar
+                 ejecutable. Hereda su config del parent. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

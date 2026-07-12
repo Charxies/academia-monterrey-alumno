@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Perfil de usuario — TaskFlow</title>
+<!-- ============================================================
+     Página SOLO LOCAL (no existe equivalente en the-internet).
+     DUEÑO: D2 (MP-6, MP-9, Integrador obj 15).
+     "Versión 1 desplegada": las clases css-* simulan las clases
+     AUTOGENERADAS de un framework CSS (styled-components/emotion).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - botón con class="css-a1b2c3" Y data-testid="btn-guardar"
+         (en perfil-v2.html la clase se REGENERA a css-x9y8z7 y el
+          data-testid sobrevive — ese contraste ES la demo de MP-6)
+       - email con data-testid="email-perfil": ana.garcia@taskflow.mx
+       - XPath ABSOLUTO del email en esta versión:
+           /html/body/div/div/p[1]
+         (en v2 un div contenedor extra lo rompe — demo de MP-9)
+       - link de contacto por TEXTO VISIBLE exacto "Contactar a Ana"
+         (By.linkText, D2 obj 15) con href="mailto:ana.garcia@taskflow.mx";
+         SIN data-testid a propósito: linkText debe ser la única opción razonable
+     El CONTENIDO VISIBLE debe ser idéntico al de perfil-v2.html.
+     ============================================================ -->
+<style>
+  body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; background: #f0f3f2; }
+  .css-k2j9f1 { max-width: 420px; margin: 3rem auto; padding: 2rem; background: #fff;
+                border: 1px solid #ddd; border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .css-p0q3m8 { margin: 0 0 .25rem; font-size: 1.5rem; }
+  .css-t5w2r7 { color: #666; margin: 0 0 1rem; }
+  .css-d8e4n2 { margin: 1rem 0; padding: .75rem 1rem; background: #f7f7f7; border-radius: 6px; }
+  .css-h6b1x4 { margin: .3rem 0; }
+  .css-a1b2c3 { background: #2c6e49; color: #fff; border: 0; padding: .6rem 1.2rem;
+                border-radius: 6px; font-size: 1rem; cursor: pointer; }
+  .css-l3v7s9 { display: inline-block; margin-left: 1rem; color: #1566c0; }
+</style>
+</head>
+<body>
+  <div class="css-k2j9f1">
+    <h1 class="css-p0q3m8">Ana García</h1>
+    <p class="css-t5w2r7">QA Engineer en TaskFlow</p>
+    <div class="css-d8e4n2">
+      <p class="css-h6b1x4" data-testid="email-perfil">ana.garcia@taskflow.mx</p>
+      <p class="css-h6b1x4">Monterrey, México</p>
+    </div>
+    <button class="css-a1b2c3" data-testid="btn-guardar">Guardar cambios</button>
+    <a class="css-l3v7s9" href="mailto:ana.garcia@taskflow.mx">Contactar a Ana</a>
+  </div>
+</body>
+</html>

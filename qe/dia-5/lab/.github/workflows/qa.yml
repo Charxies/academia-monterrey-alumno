@@ -1,0 +1,97 @@
+# qa.yml — pipeline del framework HÍBRIDO (capa API + smoke UI) contra tu propia taskflow-api.
+#
+# Qué orquesta (T6): arranca EL SUT (tu taskflow-api con H2 en memoria) y corre la suite etiquetada
+# @Tag("ci") en headless. No despliega nada (eso fue S3): aquí se PRUEBA un SUT vivo.
+#
+# Cero secretos: H2 en memoria, los usuarios se crean por request (AuthClient). Si algún día apuntas
+# la suite a una DB/ambiente real, las credenciales van en GitHub Secrets, JAMÁS en este yml.
+#
+# TODOs del alumno (MP-8): (1) pon tu API_REPO abajo; (2) revisa el nombre del artifact de Allure;
+# (3) etiqueta @Tag("ci") las clases de api/ y SmokeUiTest (el filtro -Dgroups=ci de abajo depende
+# de ese tag: acota el run a la capa CI y deja fuera los sitios externos de D1-D3 y los tests UI de
+# D4 que dependen de la semilla).
+name: qa
+
+on:
+  push:
+  workflow_dispatch:   # permite lanzarlo a mano desde la pestaña Actions
+
+env:
+  # TODO (MP-8): tu repo de la API (el SUT). Formato: <usuario>/taskflow-api-<usuario>.
+  # OJO (dolor 9): es el repo de la API, NO la consola taskflow-<usuario> de S1. Repo público.
+  API_REPO: TU-USUARIO/taskflow-api-TU-USUARIO
+
+jobs:
+  hibrido:
+    runs-on: ubuntu-latest   # ya trae Google Chrome; Selenium Manager resuelve el driver en CI
+    steps:
+      # 1) DOBLE CHECKOUT. Primero este repo (el framework QA)...
+      - name: Checkout QA (framework híbrido)
+        uses: actions/checkout@v4
+
+      # ...y luego el repo de la API en la carpeta local taskflow-api (repo público -> sin token).
+      - name: Checkout de la taskflow-api (el SUT)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.API_REPO }}
+          path: taskflow-api
+
+      - name: Setup Java 21 + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # 2) Empaquetar la API SIN correr sus tests (ya corren en SU pipeline de S3D4).
+      - name: Empaquetar la taskflow-api
+        working-directory: taskflow-api
+        run: mvn -q -DskipTests package
+
+      # 3) Arrancar la API con perfil h2 en background, log a api.log. UN SOLO step de arranque
+      #    (dos darían "Address already in use", dolor 1).
+      - name: Arrancar la API (perfil h2) en background
+        working-directory: taskflow-api
+        run: |
+          java -jar target/*.jar --spring.profiles.active=h2 > api.log 2>&1 &
+          echo "API lanzada en background (PID $!)"
+
+      # 4) ESPERA ACTIVA: hasta 30 intentos x 2 s (60 s techo) contra /auth/login. CUALQUIER respuesta
+      #    HTTP = viva (un 405/401 significa "Spring ya contesta"). Al agotar: imprime api.log y falla.
+      #    (Un 'sleep 5' fijo es flaky el día que Maven descarga lento o el runner va lento: dolor 2.)
+      - name: Esperar a que la API responda
+        working-directory: taskflow-api
+        run: |
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null http://localhost:8080/auth/login; then
+              echo "API viva tras $i intento(s)."
+              exit 0
+            fi
+            echo "Intento $i: la API aún no responde; reintento en 2 s..."
+            sleep 2
+          done
+          echo "::error::La API no respondió en 60 s. Log de arranque:"
+          cat api.log
+          exit 1
+
+      # 5) Correr SOLO la capa etiquetada ci (api/ + SmokeUiTest), headless. -Dheadless=true muestra
+      #    su motivación real: en CI no hay pantalla (el --window-size ya está fijo en DriverFactory).
+      - name: Correr la suite CI (API + smoke UI) headless
+        run: mvn test -Dgroups=ci -Dheadless=true
+
+      # 6) Allure como artifact SIEMPRE (el reporte importa MÁS cuando está rojo).
+      - name: Subir resultados de Allure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          # TODO (MP-8): confirma el nombre del artifact (lo descargarás en MP-9).
+          name: allure-results
+          path: target/allure-results
+
+      # 7) Si algo falló, subir api.log para diagnosticar el arranque del SUT.
+      - name: Subir api.log si hubo fallo
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-log
+          path: taskflow-api/api.log

@@ -1,0 +1,38 @@
+# docker-compose.yml — ESQUELETO (S3D2). Lo construyes en 3 pasos (PM-1):
+#   MP-8  -> el servicio 'db' + el volumen 'pgdata'
+#   MP-9  -> el servicio 'api' + sus variables de entorno (perfil docker, credenciales, JWT)
+#   MP-10 -> el healthcheck de 'db' + el 'depends_on: condition: service_healthy'
+#
+# Los NOMBRES de servicio 'db' y 'api', la imagen 'taskflow-api' y el volumen 'pgdata' están FIJADOS
+# por el Contrato con D3/D4 — no los cambies. Todo secreto llega desde .env (12-factor), nunca aquí.
+# En 'solucion/docker-compose.yml' está la versión final.
+services:
+
+  api:
+    build: .                       # construye la imagen desde el Dockerfile de esta carpeta
+    image: taskflow-api            # nombra la imagen (Contrato D3/D4). NO cambiar.
+    # TODO MP-9 (a): publicar el puerto 8080 hacia tu host ("8080:8080").
+    # TODO MP-9 (b): environment:
+    #                  SPRING_PROFILES_ACTIVE: docker    # activa application-docker.yml
+    #                  DB_USER: ${POSTGRES_USER}         # el yml documenta; aquí se inyecta
+    #                  DB_PASSWORD: ${POSTGRES_PASSWORD}
+    #                  JWT_SECRET: ${JWT_SECRET}         # la promesa de S2D5, pagada
+    #                (DB_HOST/DB_PORT/DB_NAME NO se ponen: los defaults del yml ya apuntan a 'db')
+    # TODO MP-10: depends_on -> db -> condition: service_healthy
+    #             (sin esto la API le gana la carrera a Postgres: Error intencional #3)
+
+  db:
+    image: postgres:16
+    # TODO MP-8 (a): environment con POSTGRES_USER/POSTGRES_PASSWORD/POSTGRES_DB desde ${...} de .env
+    # TODO MP-8 (b): ports "5432:5432"  # solo para inspección desde el host (psql/DBeaver)
+    # TODO MP-8 (c): volumes -> pgdata:/var/lib/postgresql/data  # el estado vive en el volumen
+    # TODO MP-10: healthcheck con pg_isready:
+    #   healthcheck:
+    #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+    #     interval: 5s
+    #     timeout: 3s
+    #     retries: 10
+
+# TODO MP-8 (d): declarar el volumen con nombre (sin esto, 'pgdata:' arriba no existe).
+#   volumes:
+#     pgdata:      # con nombre: los datos sobreviven a down/up (NO a down -v)

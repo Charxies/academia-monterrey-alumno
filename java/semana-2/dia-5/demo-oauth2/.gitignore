@@ -1,0 +1,6 @@
+target/
+# Secretos REALES de Google: NUNCA se commitean (solo la plantilla .example y los placeholders del yml).
+src/main/resources/application-local.yml
+*.log
+.idea/
+*.iml

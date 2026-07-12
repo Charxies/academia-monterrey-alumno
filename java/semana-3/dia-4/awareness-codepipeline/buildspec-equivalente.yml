@@ -1,0 +1,65 @@
+# buildspec-equivalente.yml — el "ci-cd.yml de ustedes", traducido a AWS CodeBuild.
+#
+# ⚠ AWARENESS — NO se construye ni se corre en clase. Es el archivo que abres LADO A LADO con tu
+# .github/workflows/ci-cd.yml para VER que es la MISMA idea con otra sintaxis: quien entiende su
+# pipeline de hoy, lee un CodePipeline mañana.
+#
+# Mapeo directo:
+#   GitHub Actions (hoy)                         CodeBuild (esto)
+#   -----------------------------------------    ------------------------------------------
+#   jobs.test.steps: actions/setup-java@v4   ->  phases.install.runtime-versions.java
+#   run: mvn -B verify                       ->  phases.build.commands: - mvn -B verify   (MISMO comando)
+#   docker build + docker push a GHCR        ->  phases.build/post_build: docker build + push a ECR
+#   actions/upload-artifact (reporte jacoco) ->  reports + artifacts (van a S3)
+#
+# El disparo ('on: push') no vive aquí: en AWS lo pone el stage Source de CodePipeline
+# (CodeConnections a GitHub). Este buildspec es SOLO la fase Build (equivale a los jobs test+build).
+
+version: 0.2
+
+env:
+  variables:
+    # Equivale a construir el nombre de imagen con el owner en minúsculas (dolor 6 en Actions).
+    IMAGE_REPO: "taskflow-api"
+  # En AWS los "secrets" NO se pegan: se leen de SSM Parameter Store / Secrets Manager vía rol IAM
+  # (la contraparte de secrets/vars del repo). La EC2/CodeBuild ASUME un rol: no hay llave que copiar.
+  # parameter-store:
+  #   ECR_REGISTRY: /taskflow/ecr-registry
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21            # <- equivale a actions/setup-java@v4 con java-version '21'
+    commands:
+      - echo "Instalando toolchain (Java 21). En Actions esto lo hace setup-java + cache: maven."
+
+  pre_build:
+    commands:
+      # Login al registry de AWS (ECR) = el 'docker login ghcr.io' del job build-and-push.
+      - echo "Login a ECR (equivale a: docker login ghcr.io con GITHUB_TOKEN)"
+      - aws ecr get-login-password --region "$AWS_DEFAULT_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+
+  build:
+    commands:
+      # ⭐ LA LÍNEA DEL LADO A LADO: es EXACTAMENTE tu job 'test' — mismo comando, otra sintaxis.
+      - mvn -B verify            # toda la suite de S3D1 + el gate jacoco:check (LINE >= 70%)
+      # Construye la imagen de S3D2 con doble tag (SHA + latest), igual que el job build-and-push.
+      - docker build -t "$ECR_REGISTRY/$IMAGE_REPO:$CODEBUILD_RESOLVED_SOURCE_VERSION" -t "$ECR_REGISTRY/$IMAGE_REPO:latest" .
+
+  post_build:
+    commands:
+      # Publica ambos tags a ECR (equivale a: docker push --all-tags a GHCR).
+      - docker push "$ECR_REGISTRY/$IMAGE_REPO:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - docker push "$ECR_REGISTRY/$IMAGE_REPO:latest"
+
+# El reporte de cobertura de JaCoCo — en Actions es upload-artifact; aquí, un 'report group'.
+reports:
+  jacoco:
+    files:
+      - "target/site/jacoco/jacoco.xml"
+    file-format: JACOCOXML
+
+# Los artefactos del build viajan por S3 (en Actions viajan por el runner / GHCR).
+artifacts:
+  files:
+    - "target/site/jacoco/**/*"

@@ -1,0 +1,87 @@
+# =============================================================================
+# ci-cd.yml — el pipeline COMPLETO de TaskFlow (S3D4). Solución de referencia.
+#
+# Vive en el repo del alumno en .github/workflows/ci-cd.yml (la ruta EXACTA importa:
+# ni 'workflow/' sin s ni otra carpeta -> no dispara, dolor 3).
+#
+# UN archivo, TRES jobs encadenados:
+#   test           CI: corre TODA la suite de S3D1 + el gate JaCoCo, en push a main Y en cada PR
+#   build-and-push CD 1/2: construye la imagen de S3D2 y la publica en GHCR (solo push a main)
+#   deploy         CD 2/2: ssh a la EC2 de S3D3 y 'compose up' — GUARDADO tras vars.DEPLOY_TARGET
+#
+# El guard 'if: vars.DEPLOY_TARGET == ec2' hace que el MISMO yml sirva para Plan A (deploy vivo)
+# y Plan B (deploy 'skipped' -> gris, pipeline igual VERDE).
+# =============================================================================
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # STRETCH (3): disparar también en tags 'v*' para publicar la imagen :vX.Y — se estrena en D5 con v3.0.
+  #   tags: ['v*']   # (iría dentro de push:)
+
+# STRETCH (1): dos pushes seguidos NO encolan runs zombie; el nuevo cancela al anterior en curso.
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:                                   # CI: corre en push a main Y en cada PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven                    # sin esto: build de 8 min (dolor 2)
+      - name: Suite completa + gate JaCoCo
+        run: mvn -B verify                # el gate de D1 (LINE >= 70%), ahora automático
+      - name: Reporte de cobertura como artifact
+        if: always()                      # el reporte importa MÁS cuando el run está rojo
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-jacoco
+          path: target/site/jacoco/
+
+  build-and-push:                         # CD 1/2: solo en push a main, nunca en PRs
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write                     # sin esto: denied al push a GHCR (dolor 1)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nombre de imagen (owner en minúsculas)
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/taskflow-api" >> "$GITHUB_ENV"
+      - name: Login a GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Build (tags SHA + latest)
+        run: docker build -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
+      - name: Push
+        run: docker push --all-tags "$IMAGE"
+
+  deploy:                                 # CD 2/2: guardado tras la var — en Plan B queda skipped
+    needs: build-and-push
+    if: vars.DEPLOY_TARGET == 'ec2'
+    runs-on: ubuntu-latest
+    # STRETCH (2): 'environment: production' + required reviewer -> aprobar el deploy con un click
+    #   (es el "Manual approval" de CodePipeline). Se configura en Settings -> Environments.
+    #   environment: production
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.EC2_HOST }}      # config, no secreto -> var
+          username: ${{ vars.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }} # credencial -> secret, SIEMPRE
+          script: |
+            cd ~/taskflow-api
+            git pull
+            docker compose -f docker-compose.prod.yml pull api
+            docker compose -f docker-compose.prod.yml up -d
+
+# STRETCH (4): añadir .github/dependabot.yml para mantener las actions (checkout, setup-java, ...) al
+#   día automáticamente — Dependabot abre PRs cuando sale una versión nueva. (Es un archivo aparte.)

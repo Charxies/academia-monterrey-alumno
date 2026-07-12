@@ -1,0 +1,24 @@
+# application.yml — gemelo BLOQUEANTE (Demo D1 / Demo D3, S3D5 AM-1). Puerto 8091.
+server:
+  port: 8091
+  tomcat:
+    threads:
+      # POOL CAPADO A 10 a proposito: el mismo fenomeno que los 200 threads default de Tomcat, pero a
+      # escala VISIBLE. Con 10 threads, 50 requests concurrentes -> tandas de 10 -> la ultima ~10 s.
+      # (Con 200 el efecto es el mismo con 4000 requests; 10 lo hace demostrable en una laptop.)
+      max: 10
+
+spring:
+  application:
+    name: mvc-bloqueante
+  main:
+    banner-mode: "off"
+
+  # ---- Demo D3: VIRTUAL THREADS (Java 21 / Loom) ----
+  # DESCOMENTAR EN VIVO y reiniciar: la MISMA carga de 50 termina ~2 s, con el codigo imperativo
+  # INTACTO (no se toco una linea del controller). Threads baratos del JVM: ya no ~1 thread del SO por
+  # request. Resuelve "muchos requests que solo esperan I/O". NO resuelve backpressure/streaming/
+  # composicion de flujos -> eso sigue siendo territorio reactivo (el gemelo Flux).
+  # threads:
+  #   virtual:
+  #     enabled: true

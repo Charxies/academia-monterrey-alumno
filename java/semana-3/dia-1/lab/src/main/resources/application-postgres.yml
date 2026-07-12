@@ -1,0 +1,27 @@
+# application-postgres.yml — perfil 'postgres' del STRETCH ESTRELLA del día.
+#
+# Cómo se usa (anexo guiado en alumno.md):
+#   1) Levantar Postgres en Docker (CAJA NEGRA — "qué es esto se entiende en S3D2"):
+#        docker run --name taskflow-db -e POSTGRES_USER=taskflow -e POSTGRES_PASSWORD=taskflow \
+#                   -e POSTGRES_DB=taskflow -p 5432:5432 -d postgres:16
+#   2) DESCOMENTAR la dependencia org.postgresql:postgresql en el pom.xml.
+#   3) Arrancar con el perfil postgres:
+#        mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+#
+# MORALEJA (dicha tal cual): solo cambió la CONFIGURACIÓN — ni entidades, ni repos, ni servicios.
+# Las mismas @Entity, los mismos JpaRepository, el mismo ReportService. Eso compró JPA: Hibernate
+# genera el SQL del dialecto correcto por debajo. En S3D2 esto se formaliza con docker-compose.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskflow
+    username: taskflow
+    password: taskflow
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    # El dialecto lo AUTODETECTA Hibernate por el driver; se deja explícito como documentación.
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

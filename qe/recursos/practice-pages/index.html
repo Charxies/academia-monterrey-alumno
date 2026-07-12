@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/ (home).
+     DUEÑO: D1 (qe/dia-1/_spec.md). Lo referencian D1 (MP-6, MP-7,
+     Integrador tests 1-2) y el resto de la semana como índice.
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - <title> exacto: "The Internet"
+       - h1 con class "heading" y texto "Welcome to the-internet"
+       - link con texto exacto "Form Authentication" -> login.html
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  a { color: #1566c0; }
+  h1.heading { margin-bottom: .25rem; }
+  ul { line-height: 1.9; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h1 class="heading">Welcome to the-internet</h1>
+  <h2>Available Examples</h2>
+  <ul>
+    <li><a href="dinamicos.html">Add/Remove Elements</a></li>
+    <li><a href="checkboxes.html">Checkboxes</a></li>
+    <li><a href="dropdowns.html">Dropdown</a></li>
+    <li><a href="controles-dinamicos.html">Dynamic Controls</a></li>
+    <li><a href="carga-dinamica.html">Dynamic Loading</a></li>
+    <li><a href="login.html">Form Authentication</a></li>
+    <li><a href="frames.html">Frames</a></li>
+    <li><a href="formulario.html">Inputs</a></li>
+    <li><a href="alertas.html">JavaScript Alerts</a></li>
+    <li><a href="ventanas.html">Multiple Windows</a></li>
+    <li><a href="frames-anidados.html">Nested Frames</a></li>
+    <li><a href="tabla.html">Tables</a></li>
+  </ul>
+
+  <h2>Solo en el espejo local</h2>
+  <ul>
+    <li><a href="perfil-v1.html">Perfil v1 (clases de framework)</a></li>
+    <li><a href="perfil-v2.html">Perfil v2 (nuevo deploy: layout y clases regeneradas)</a></li>
+    <li><a href="toast.html">Toast que intercepta clicks</a></li>
+    <li><a href="carga-dinamica.html?modo=inexistente">Dynamic Loading (ejemplo 2: elemento inexistente)</a></li>
+    <li><a href="tienda/index.html">Tienda (espejo de saucedemo.com)</a></li>
+  </ul>
+
+  <footer>Espejo local para el curso QE — sin dependencias externas. Fuente única: <code>qe/recursos/practice-pages/</code></footer>
+</body>
+</html>

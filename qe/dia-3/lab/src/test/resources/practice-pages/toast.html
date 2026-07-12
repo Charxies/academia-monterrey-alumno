@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Página SOLO LOCAL — es la página PRIMARIA de D3 MP-2 (no hay
+     equivalente confiable en the-internet). DUEÑO: D3.
+     Guion del ejercicio (error intencional 1 de D3):
+       1. click en #btn-guardar → aparece #toast (overlay que TAPA
+          la página, incluido #btn-continuar) durante 2.5 s
+       2. click INMEDIATO en #btn-continuar →
+          ElementClickInterceptedException (el mensaje nombra al
+          div#toast como interceptor — leerlo es parte del MP)
+       3. la solución correcta llega en PM-1:
+          invisibilityOfElementLocated(By.id("toast")) y luego click
+     Contrato: #btn-guardar, #btn-continuar, #toast, #resultado
+     (texto tras continuar: "Continuaste al siguiente paso").
+     PROHIBIDO "arreglar" con click de JavascriptExecutor.
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  button { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+           padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; margin-right: .75rem; }
+  #btn-continuar { background: #1566c0; }
+  #resultado { font-weight: 600; color: #1566c0; min-height: 1.5rem; }
+  /* El "toast" es un overlay de pantalla completa: garantiza que el
+     click a #btn-continuar sea interceptado mientras esté visible. */
+  #toast { position: fixed; inset: 0; z-index: 1000;
+           background: rgba(19, 35, 34, .45);
+           display: flex; align-items: center; justify-content: center; }
+  .toast-card { background: #2c6e49; color: #fff; padding: 1.2rem 2rem;
+                border-radius: 8px; font-size: 1.15rem;
+                box-shadow: 0 4px 16px rgba(0,0,0,.3); }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>Toast que intercepta clicks (solo local)</h3>
+  <p>Haz click en «Guardar» y de inmediato intenta «Continuar»: durante 2.5 s
+     el toast tapa la página completa y el click es interceptado.</p>
+
+  <button id="btn-guardar" data-testid="btn-guardar">Guardar</button>
+  <button id="btn-continuar" data-testid="btn-continuar">Continuar</button>
+
+  <p id="resultado" data-testid="resultado"></p>
+
+  <div id="toast" data-testid="toast" style="display:none" aria-live="polite">
+    <div class="toast-card">Cambios guardados con éxito</div>
+  </div>
+
+  <footer>Página local del curso QE — retraso real de 2.5 s vía setTimeout</footer>
+
+<script>
+(function () {
+  'use strict';
+  var TOAST_MS = 2500;   // retraso REAL: la espera de invisibilidad tiene algo que esperar
+  var toast = document.getElementById('toast');
+
+  document.getElementById('btn-guardar').addEventListener('click', function () {
+    toast.style.display = 'flex';
+    setTimeout(function () { toast.style.display = 'none'; }, TOAST_MS);
+  });
+
+  document.getElementById('btn-continuar').addEventListener('click', function () {
+    document.getElementById('resultado').textContent = 'Continuaste al siguiente paso';
+  });
+})();
+</script>
+</body>
+</html>

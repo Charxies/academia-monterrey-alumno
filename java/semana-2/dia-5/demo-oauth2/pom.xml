@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+      demo-oauth2 — proyecto SOLO INSTRUCTOR (awareness OAuth2/OIDC, PM-1, 15 min).
+      Los alumnos NO lo montan (requiere registrar una app en Google Cloud). Vive aparte del
+      taskflow-api: aquí NOSOTROS somos el 'client' y Google el 'authorization server'.
+      Mismo parent/Java que el capstone (Spring Boot 3.5.3, Java 21).
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.taskflow</groupId>
+    <artifactId>demo-oauth2</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>demo-oauth2</name>
+    <description>Demo de awareness: Login with Google (OAuth2/OIDC) — solo instructor</description>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Web + vistas mínimas para pintar el principal tras el callback. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- La estrella del demo: cliente OAuth2/OIDC. Aporta oauth2Login() y el flujo completo
+             redirect -> consentimiento -> callback contra un authorization server (Google). -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

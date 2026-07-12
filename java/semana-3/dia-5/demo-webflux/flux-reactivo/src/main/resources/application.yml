@@ -1,0 +1,10 @@
+# application.yml — gemelo REACTIVO (Demo D2, S3D5 AM-1). Puerto 8092.
+server:
+  port: 8092        # no choca con 8080 (alumnos) ni 8091 (gemelo MVC bloqueante)
+
+spring:
+  application:
+    name: flux-reactivo
+  main:
+    banner-mode: "off"
+    # WebFlux trae Netty por defecto; no hay pool de Tomcat que capar aqui: el event loop es la gracia.

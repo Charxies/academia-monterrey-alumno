@@ -1,0 +1,16 @@
+# .dockerignore — ESQUELETO (S3D2, MP-5). Lo completas al escribir el multi-stage.
+#
+# El build context es TODO lo que 'docker build .' manda al daemon ANTES de leer el
+# Dockerfile. Sin este archivo, el COPY arrastra basura y —peor— datos y secretos:
+# builds lentos y FUGAS dentro de la imagen. (Verás "transferring context: X MB" en
+# la primera línea del build; si es enorme, te falta este archivo.)
+#
+# TODO MP-5: lista lo que NO debe viajar al build context, y comenta POR QUÉ.
+#   Piensa en:
+#     - target/        -> los .class y el jar viejo se reconstruyen DENTRO de la etapa build
+#     - data/          -> la H2 en ARCHIVO con TUS datos de dev
+#     - .git/          -> el historial completo, innecesario para ejecutar
+#     - .idea/  *.iml  -> config del IDE
+#     - .env           -> TUS secretos (¡esto es lo que el DoD-(e) verifica que NO se filtre!)
+#
+# (En 'solucion/.dockerignore' está la lista final.)

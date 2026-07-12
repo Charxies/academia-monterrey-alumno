@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Mismo GAV que D1..D4: sigues trabajando SOBRE tu mismo proyecto TaskFlow -->
+    <groupId>com.taskflow</groupId>
+    <artifactId>taskflow</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Java 21: 'release' fija de un jalón la versión de compilación (source + target) -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- UTF-8 para que los acentos de los comentarios no se rompan en ningún SO -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Clase que corre 'mvn -q compile exec:java' si no indicas otra con -Dexec.mainClass=... -->
+        <exec.mainClass>com.taskflow.Main</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <!-- JUnit 5 (Jupiter): el agregador trae api + engine + params. scope test = solo para
+             compilar/correr tests, NO viaja en el jar de la app. Ya está resuelto: lo lees, no lo peleas. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Correr el programa desde terminal sin depender del IDE:
+                 mvn -q compile exec:java
+                 mvn -q compile exec:java "-Dexec.mainClass=com.taskflow.practicas.MP01LecturaArchivo" -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+            </plugin>
+            <!-- Surefire 3.x: descubre y corre los tests JUnit 5 en 'mvn test'. Sin una versión
+                 3.x, un Surefire viejo NO encuentra los tests de JUnit 5 (punto de dolor #6). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,25 @@
+# application-docker.yml — ESQUELETO del perfil 'docker' (S3D2, MP-9). Lo completas en clase.
+#
+# Se activa con SPRING_PROFILES_ACTIVE=docker (lo pone el compose). Apunta a la Postgres del compose.
+# Spring carga application.yml SIEMPRE y este ENCIMA: solo sobreescribe lo que declaras aquí.
+# 12-factor: usa PLACEHOLDERS ${...}; el ambiente (compose + .env) inyecta los valores.
+#
+# OJO — Error intencional #2 (MP-9): la PRIMERA versión que escribas en clase usa a propósito
+#   'jdbc:postgresql://localhost:5432/taskflow'  -> la API truena con 'Connection refused'.
+#   Dentro del contenedor 'api', localhost es el propio 'api' (ahí no hay Postgres). El host correcto
+#   es el NOMBRE del servicio: 'db'. Abajo ya va la forma buena (con default 'db').
+#
+# En 'solucion/src/main/resources/application-docker.yml' está la versión final.
+spring:
+  datasource:
+    # TODO MP-9 (a): URL parametrizada con host/puerto/nombre desde el ambiente, defaults = compose.
+    #   Pista:  url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:taskflow}
+    # TODO MP-9 (b): username y password como placeholders ${DB_USER} / ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update    # dev con Docker; producción: validate + migraciones (Flyway) — eco de S2D4
+    show-sql: true        # visible durante el curso; en prod se apaga
+  h2:
+    console:
+      enabled: false      # en este perfil no hay H2 que consolear (la inspección es psql)
+# TODO MP-9 (c): jwt.secret desde el ambiente (${JWT_SECRET}) — la promesa de S2D5, pagada.

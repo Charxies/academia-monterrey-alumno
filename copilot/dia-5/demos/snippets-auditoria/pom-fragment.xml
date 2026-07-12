@@ -1,0 +1,22 @@
+<!--
+  KATA MP-2 — snippet 2 de 3.
+
+  Fragmento sugerido por Copilot Chat ante el prompt: "resuélveme el envío de correo en Spring Boot".
+  Se presenta como si fuera para pegar en <dependencies> de tu pom.xml de taskflow-api.
+
+  NO lo pegues sin verificar en https://search.maven.org (o https://central.sonatype.com) la
+  coordenada COMPLETA groupId:artifactId:version. Auditar significa comprobar el artefacto EXISTE
+  ANTES de agregarlo — no basta con que "suene" oficial.
+
+  Verificación hecha para esta kata (2026-07, Maven Central REST API):
+    - g:org.springframework.boot a:spring-boot-starter-email  -> numFound 0  (NO EXISTE)
+    - Sí existe, en cambio: org.springframework.boot:spring-boot-starter-mail (236 versiones).
+    - Y ojo (slopsquatting): el nombre 'spring-boot-starter-email' SÍ está registrado, pero por un
+      TERCERO desconocido -> com.github.luues:spring-boot-starter-email:1.3.0.5.RELEASE, no por Spring.
+      Verificar solo el artifactId te lo daría por bueno; verificar el groupId completo lo delata.
+-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-email</artifactId>
+    <version>3.2.0</version>
+</dependency>

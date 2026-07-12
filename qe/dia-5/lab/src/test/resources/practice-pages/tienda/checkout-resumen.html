@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Swag Labs</title>
+<!-- ============================================================
+     tienda/checkout-resumen.html — espejo de /checkout-step-two.html.
+     Contrato: items con .inventory_item_price (el integrador SUMA
+     estos precios), .summary_subtotal_label "Item total: $x.xx",
+     .summary_tax_label (8% redondeado), .summary_total_label,
+     #finish, #cancel.
+     Generado como parte del espejo local de saucedemo.com (D3).
+     Mismos ids/data-test/clases/textos que saucedemo: el mismo
+     test corre contra ambos sin tocar un locator.
+     ============================================================ -->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #132322; background: #fff; }
+  .primary_header { display: flex; justify-content: space-between; align-items: center;
+                    background: #132322; color: #fff; padding: .75rem 1.25rem; }
+  .app_logo { font-weight: 800; font-size: 1.3rem; letter-spacing: .5px; }
+  .shopping_cart_link { position: relative; display: inline-flex; width: 40px; height: 34px;
+                        color: #fff; text-decoration: none; align-items: center; justify-content: center; }
+  .shopping_cart_badge { position: absolute; top: -7px; right: -7px; background: #e2231a;
+                         color: #fff; border-radius: 50%; min-width: 20px; height: 20px;
+                         font-size: .8rem; font-weight: 700; display: flex; align-items: center;
+                         justify-content: center; padding: 0 5px; }
+  .header_secondary_container { background: #eef2f1; padding: .7rem 1.25rem; }
+  .title { font-size: 1.15rem; font-weight: 700; }
+  .btn { border: 1px solid #132322; background: #fff; color: #132322; border-radius: 4px;
+         padding: .55rem 1rem; cursor: pointer; font-weight: 600; font-size: .95rem; }
+  .btn_action { background: #3ddc91; border-color: #3ddc91; color: #132322; }
+  .btn_secondary { border-color: #e2231a; color: #e2231a; }
+  .btn_primary { border-color: #132322; }
+  .error-message-container { background: #e2231a; border-radius: 4px; margin: .75rem 0; }
+  h3[data-test="error"] { color: #fff; margin: 0; padding: .6rem .8rem;
+                          font-size: .95rem; font-weight: 600; }
+  .spinner-overlay { position: fixed; inset: 0; background: rgba(255,255,255,.9);
+                     display: flex; align-items: center; justify-content: center; z-index: 1000; }
+  .spinner { width: 48px; height: 48px; border: 5px solid #cfe0d8; border-top-color: #18583a;
+             border-radius: 50%; animation: girar .8s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  /* inventario */
+  .inventory_list { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+                    gap: 1rem; padding: 1.25rem; }
+  .inventory_item { border: 1px solid #ddd; border-radius: 8px; padding: 1rem;
+                    display: flex; flex-direction: column; gap: .5rem; }
+  .inventory_item_img { height: 90px; border-radius: 6px; display: flex; align-items: center;
+                        justify-content: center; font-size: 1.8rem; font-weight: 800;
+                        color: #18583a; background: #eef7f2; }
+  .inventory_item_name { color: #18583a; font-weight: 700; }
+  .inventory_item_desc { color: #555; font-size: .85rem; }
+  .pricebar, .item_pricebar { display: flex; justify-content: space-between;
+                              align-items: center; margin-top: auto; gap: .5rem; }
+  .inventory_item_price { font-weight: 700; font-size: 1.05rem; }
+  /* carrito / resumen */
+  .cart_contents_container, .checkout_summary_container { padding: 1.25rem; max-width: 760px; }
+  .cart_quantity_label, .cart_desc_label { display: inline-block; font-weight: 700;
+                                           color: #555; font-size: .85rem; margin-right: 2rem; }
+  .cart_item { display: flex; gap: 1.25rem; border-bottom: 1px solid #ddd; padding: 1rem 0; }
+  .cart_quantity { border: 1px solid #ccc; border-radius: 4px; padding: .2rem .7rem;
+                   height: fit-content; }
+  .cart_item_label { flex: 1; }
+  .cart_footer { display: flex; gap: .75rem; margin-top: 1.25rem; }
+  /* checkout */
+  .checkout_info_wrapper { padding: 1.25rem; max-width: 420px; }
+  .checkout_info_wrapper input[type="text"] { display: block; width: 100%; padding: .6rem .7rem;
+       border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; margin-bottom: .75rem; }
+  .summary_info { margin-top: 1rem; }
+  .summary_info_label { font-weight: 700; margin-top: .75rem; }
+  .summary_value_label { color: #555; }
+  .summary_subtotal_label, .summary_tax_label { margin-top: .5rem; color: #333; }
+  .summary_total_label { font-weight: 800; font-size: 1.05rem; margin-top: .25rem; }
+  /* confirmación */
+  .checkout_complete_container { padding: 2.5rem 1.25rem; max-width: 640px; margin: 0 auto;
+                                 text-align: center; }
+  .complete-header { color: #18583a; }
+  .complete-text { color: #555; margin: .75rem 0 1.5rem; }
+  /* login */
+  .login_logo { text-align: center; font-weight: 800; font-size: 1.6rem; padding: 1.5rem 0 .5rem; }
+  .login_wrapper { max-width: 380px; margin: 0 auto; padding: 1.25rem; }
+  .login_wrapper input[type="text"], .login_wrapper input[type="password"] {
+       display: block; width: 100%; padding: .6rem .7rem; border: 1px solid #bbb;
+       border-radius: 4px; font-size: 1rem; margin-bottom: .75rem; }
+  .submit-button { display: block; width: 100%; padding: .7rem; font-size: 1.05rem;
+                   font-weight: 700; border: 0; border-radius: 4px; cursor: pointer; }
+  .login_credentials_wrap { max-width: 760px; margin: 1.5rem auto; display: flex; gap: 1rem;
+                            padding: 0 1.25rem; flex-wrap: wrap; }
+  #login_credentials, .login_password { flex: 1; min-width: 260px; background: #eef2f1;
+                                        padding: 1rem; border-radius: 6px; font-size: .95rem; }
+  #login_credentials h4, .login_password h4 { margin: 0 0 .5rem; }
+</style>
+</head>
+<body>
+  <div id="spinner" class="spinner-overlay" data-testid="spinner"><div class="spinner"></div></div>
+  <div id="contenido" style="display:none">
+    <header class="primary_header">
+      <div class="app_logo">Swag Labs</div>
+      <a class="shopping_cart_link" data-test="shopping-cart-link" href="carrito.html"><svg width="26" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></a>
+    </header>
+    <div class="header_secondary_container"><span class="title" data-test="title">Checkout: Overview</span></div>
+    <div class="checkout_summary_container">
+      <div class="cart_list" data-test="cart-list">
+        <div class="cart_quantity_label" data-test="cart-quantity-label">QTY</div>
+        <div class="cart_desc_label" data-test="cart-desc-label">Description</div>
+      </div>
+      <div class="summary_info">
+        <div class="summary_info_label" data-test="payment-info-label">Payment Information:</div>
+        <div class="summary_value_label" data-test="payment-info-value">SauceCard #31337</div>
+        <div class="summary_info_label" data-test="shipping-info-label">Shipping Information:</div>
+        <div class="summary_value_label" data-test="shipping-info-value">Free Pony Express Delivery!</div>
+        <div class="summary_info_label" data-test="total-info-label">Price Total</div>
+        <div class="summary_subtotal_label" data-test="subtotal-label">Item total: $0.00</div>
+        <div class="summary_tax_label" data-test="tax-label">Tax: $0.00</div>
+        <div class="summary_total_label" data-test="total-label">Total: $0.00</div>
+        <div class="cart_footer">
+          <button type="button" class="btn btn_secondary back btn_medium" id="cancel"
+                  name="cancel" data-test="cancel">Cancel</button>
+          <button type="button" class="btn btn_action btn_medium cart_button" id="finish"
+                  name="finish" data-test="finish">Finish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+/* ============== tienda: JS compartido (espejo local de saucedemo.com) ==============
+   Duplicado INLINE en cada página a propósito: la spec de D3 exige páginas
+   file://-safe sin fetch, sin CDN y sin módulos (cero orígenes externos).
+   Contrato con los tests: mismos ids/data-test/clases/textos y MISMAS
+   credenciales que saucedemo.com — el mismo test corre contra ambos. */
+'use strict';
+var PRODUCTOS = [
+  { id: 'sauce-labs-backpack', nombre: 'Sauce Labs Backpack', precio: 29.99, inic: 'SB',
+    desc: 'carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.' },
+  { id: 'sauce-labs-bike-light', nombre: 'Sauce Labs Bike Light', precio: 9.99, inic: 'BL',
+    desc: "A red light isn't the desired state in testing but it sure helps when riding your bike at night." },
+  { id: 'sauce-labs-bolt-t-shirt', nombre: 'Sauce Labs Bolt T-Shirt', precio: 15.99, inic: 'BT',
+    desc: 'Get your testing superhero on with the Sauce Labs bolt T-shirt.' },
+  { id: 'sauce-labs-fleece-jacket', nombre: 'Sauce Labs Fleece Jacket', precio: 49.99, inic: 'FJ',
+    desc: "It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office." },
+  { id: 'sauce-labs-onesie', nombre: 'Sauce Labs Onesie', precio: 7.99, inic: 'ON',
+    desc: 'Rib snap infant onesie for the junior automation engineer in development.' },
+  { id: 'test.allthethings()-t-shirt-(red)', nombre: 'Test.allTheThings() T-Shirt (Red)', precio: 15.99, inic: 'TR',
+    desc: 'This classic Sauce Labs t-shirt is perfect to wear when cozying up to your keyboard to automate a few tests.' }
+];
+var USUARIOS_VALIDOS = ['standard_user', 'locked_out_user', 'performance_glitch_user'];
+var PASSWORD_VALIDA = 'secret_sauce';
+
+function usuarioActual() { return sessionStorage.getItem('tienda.usuario'); }
+
+function carrito() {
+  try { return JSON.parse(sessionStorage.getItem('tienda.carrito')) || []; }
+  catch (e) { return []; }
+}
+
+function guardarCarrito(ids) { sessionStorage.setItem('tienda.carrito', JSON.stringify(ids)); }
+
+function producto(id) {
+  for (var i = 0; i < PRODUCTOS.length; i++) {
+    if (PRODUCTOS[i].id === id) { return PRODUCTOS[i]; }
+  }
+  return null;
+}
+
+function centavos(precio) { return Math.round(precio * 100); }
+function dinero(cent) { return '$' + (cent / 100).toFixed(2); }
+
+function retrasoMs() {
+  // performance_glitch_user simula el backend lento de saucedemo (spec D3: 3-5 s);
+  // el resto de usuarios tiene el retraso "normal" de 0.5-3 s.
+  return usuarioActual() === 'performance_glitch_user' ? 4000 : 800;
+}
+
+function exigirSesion() {
+  if (!usuarioActual()) { location.replace('index.html'); return false; }
+  return true;
+}
+
+function mostrarContenido(render) {
+  // Retraso artificial REAL con spinner: las esperas explícitas del PM de D3
+  // (visibility, invisibility del spinner, FluentWait del stretch) tienen
+  // algo genuino que esperar.
+  setTimeout(function () {
+    if (render) { render(); }
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('contenido').style.display = 'block';
+  }, retrasoMs());
+}
+
+function actualizarBadge() {
+  var enlace = document.querySelector('.shopping_cart_link');
+  if (!enlace) { return; }
+  var n = carrito().length;
+  var badge = enlace.querySelector('.shopping_cart_badge');
+  if (n > 0) {
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'shopping_cart_badge';
+      badge.setAttribute('data-test', 'shopping-cart-badge');
+      enlace.appendChild(badge);
+    }
+    badge.textContent = n;
+  } else if (badge) {
+    badge.parentNode.removeChild(badge);   // como saucedemo: sin items no hay badge
+  }
+}
+
+function agregarAlCarrito(id) {
+  var c = carrito();
+  if (c.indexOf(id) === -1) { c.push(id); guardarCarrito(c); }
+  actualizarBadge();
+}
+
+function quitarDelCarrito(id) {
+  guardarCarrito(carrito().filter(function (x) { return x !== id; }));
+  actualizarBadge();
+}
+</script>
+<script>
+(function () {
+  'use strict';
+  if (!exigirSesion()) { return; }
+
+  function renderResumen() {
+    var lista = document.querySelector('.cart_list');
+    var subtotalCent = 0;
+
+    carrito().forEach(function (id) {
+      var p = producto(id);
+      if (!p) { return; }
+      subtotalCent += centavos(p.precio);
+      var item = document.createElement('div');
+      item.className = 'cart_item';
+      item.setAttribute('data-test', 'inventory-item');
+      item.innerHTML =
+        '<div class="cart_quantity" data-test="item-quantity">1</div>' +
+        '<div class="cart_item_label">' +
+          '<a><div class="inventory_item_name" data-test="inventory-item-name">' +
+            p.nombre + '</div></a>' +
+          '<div class="inventory_item_desc" data-test="inventory-item-desc">' + p.desc + '</div>' +
+          '<div class="item_pricebar">' +
+            '<div class="inventory_item_price" data-test="inventory-item-price">' +
+              dinero(centavos(p.precio)) + '</div>' +
+          '</div>' +
+        '</div>';
+      lista.appendChild(item);
+    });
+
+    // Misma regla que saucedemo: impuesto del 8% redondeado al centavo.
+    // El integrador NO debe hardcodear estos montos: los CALCULA desde
+    // los .inventory_item_price de la página y compara contra "Item total".
+    var impuestoCent = Math.round(subtotalCent * 0.08);
+    document.querySelector('.summary_subtotal_label').textContent = 'Item total: ' + dinero(subtotalCent);
+    document.querySelector('.summary_tax_label').textContent = 'Tax: ' + dinero(impuestoCent);
+    document.querySelector('.summary_total_label').textContent = 'Total: ' + dinero(subtotalCent + impuestoCent);
+  }
+
+  document.getElementById('cancel').addEventListener('click', function () {
+    location.href = 'productos.html';
+  });
+  document.getElementById('finish').addEventListener('click', function () {
+    guardarCarrito([]);
+    location.href = 'confirmacion.html';
+  });
+
+  mostrarContenido(function () {
+    renderResumen();
+    actualizarBadge();
+  });
+})();
+</script>
+</body>
+</html>

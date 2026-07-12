@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/tables (table1)
+     DUEÑO: D2 (MP-5, MP-7, MP-8, Integrador obj 7-11).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - table con id="table1"; headers en este orden:
+         Last Name | First Name | Email | Due | Web Site | Action
+         (el "Due" es el following-sibling::td[1] del email)
+       - datos exactos de the-internet: jsmith@gmail.com/$50.00,
+         fbach@yahoo.com/$51.00, jdoe@hotmail.com/$100.00,
+         tconway@earthlink.net/$50.00; última fila = Conway
+       - cada fila tiene links "edit" y "delete" con href NO vacío
+       - la celda "Frank" trae espacios A PROPÓSITO alrededor del
+         texto: es el objetivo de la demo normalize-space() (MP-7);
+         //td[text()='Frank'] NO matchea, //td[normalize-space()='Frank'] SÍ
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+  th, td { border: 1px solid #ccc; padding: .5rem .75rem; text-align: left; }
+  th { background: #f2f2f2; }
+  a { color: #1566c0; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>Data Tables</h3>
+  <table id="table1" class="tablesorter">
+    <thead>
+      <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Email</th>
+        <th>Due</th>
+        <th>Web Site</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Smith</td>
+        <td>John</td>
+        <td>jsmith@gmail.com</td>
+        <td>$50.00</td>
+        <td>http://www.jsmith.com</td>
+        <td><a href="#edit">edit</a> <a href="#delete">delete</a></td>
+      </tr>
+      <tr>
+        <td>Bach</td>
+        <td>   Frank   </td><!-- espacios intencionales: demo normalize-space() de MP-7 -->
+        <td>fbach@yahoo.com</td>
+        <td>$51.00</td>
+        <td>http://www.frank.com</td>
+        <td><a href="#edit">edit</a> <a href="#delete">delete</a></td>
+      </tr>
+      <tr>
+        <td>Doe</td>
+        <td>Jason</td>
+        <td>jdoe@hotmail.com</td>
+        <td>$100.00</td>
+        <td>http://www.jdoe.com</td>
+        <td><a href="#edit">edit</a> <a href="#delete">delete</a></td>
+      </tr>
+      <tr>
+        <td>Conway</td>
+        <td>Tim</td>
+        <td>tconway@earthlink.net</td>
+        <td>$50.00</td>
+        <td>http://www.timconway.com</td>
+        <td><a href="#edit">edit</a> <a href="#delete">delete</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer>Espejo local de the-internet.herokuapp.com/tables (table1) — curso QE</footer>
+</body>
+</html>

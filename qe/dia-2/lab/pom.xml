@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- MISMO proyecto taskflow-qa que arrancaste en D1: hoy (D2) solo se le AGREGAN
+         clases de localización y se EXTIENDE utils/Paginas. Nada de dependencias nuevas:
+         locators son Selenium puro. RestAssured, Allure y Page Objects llegan en D4-D5;
+         meterlos hoy sería dependencia muerta (mismo criterio que fijó D1). -->
+    <groupId>com.taskflow.qa</groupId>
+    <artifactId>taskflow-qa</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Java 21: 'release' fija source + target de un jalón -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- UTF-8 para que los acentos de los comentarios no se rompan en ningún SO -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versiones FIJADAS por D1 (nunca LATEST): reproducibilidad entre máquinas. -->
+        <selenium.version>4.31.0</selenium.version>
+        <junit.version>5.12.2</junit.version>
+        <surefire.version>3.5.3</surefire.version>
+    </properties>
+
+    <dependencies>
+        <!-- Selenium 4: trae Selenium Manager integrado (resuelve el chromedriver SOLO,
+             sin descargar binarios a mano ni WebDriverManager). scope test. -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 (aggregator: api + params + engine). El runner del curso. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- junit-platform-launcher ALINEADO al engine 1.12.2 (viene con junit-jupiter 5.12.2).
+             Surefire 3.5.3 arrastra el launcher 1.10.3, mas viejo que el engine, y el discovery
+             revienta con "OutputDirectoryProvider not available". Fijarlo explicito lo evita. -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.12.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Surefire corre los tests JUnit 5 (clases *Test bajo src/test/java).
+                 Con -Dgroups=smoke filtra por @Tag("smoke") (suite de D1). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

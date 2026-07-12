@@ -1,0 +1,15 @@
+# ------------------------------------------------------------------------------------------------
+# PLANTILLA de secretos LOCALES del demo OAuth2.
+#
+# 1. Copia este archivo como  application-local.yml  (SIN el .example) en esta misma carpeta.
+# 2. Pega tus credenciales REALES de Google Cloud (ver README.md § "Obtener credenciales").
+# 3. NUNCA lo commitees: application-local.yml está en .gitignore. Aquí solo va la plantilla.
+# ------------------------------------------------------------------------------------------------
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "123456789-abcdefg.apps.googleusercontent.com"
+            client-secret: "GOCSPX-tu-secreto-real-aqui"

@@ -1,0 +1,191 @@
+{
+  "info": {
+    "name": "TaskFlow API v2 (base)",
+    "description": "Coleccion BASE para el Integrador S2D5 (SIN auth todavia). En el integrador vas a: (1) crear una variable de coleccion {{token}}; (2) poner auth tipo Bearer {{token}} a NIVEL COLECCION (asi todos los requests la heredan); (3) en el request Login, anadir un script post-response que guarde el token: pm.collectionVariables.set(\"token\", pm.response.json().token). Con eso, un login autentica toda la coleccion. Variables: {{baseUrl}} = http://localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Registro y login. Estos endpoints son PUBLICOS (permitAll) y no llevan token.",
+      "item": [
+        {
+          "name": "POST Register (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"demo\",\n  \"email\": \"demo@taskflow.dev\",\n  \"password\": \"demo123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Alta de usuario. 201 con UserResponse (SIN passwordHash). Username duplicado -> 409."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ana\",\n  \"password\": \"ana123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login. 200 con { token }. TODO integrador: en la pestana 'Scripts/Tests' de ESTE request, anade: pm.collectionVariables.set(\"token\", pm.response.json().token); para guardar el token. Usuarios: ana/ana123 (USER, owner del proyecto 1), luis/luis123 (USER), admin/admin123 (ADMIN)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "description": "CRUD de proyectos. TODO integrador: una vez montada la auth Bearer {{token}} a nivel coleccion, estos requests la heredan.",
+      "item": [
+        {
+          "name": "GET Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"]
+            },
+            "description": "Todos los proyectos. Sin token -> 401; con token -> 200."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Project (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Proyecto de la demo\",\n  \"description\": \"Creado en la demo final\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects"]
+            },
+            "description": "Crea un proyecto. 201 + Location. El owner se toma del usuario del JWT (no viaja en el cuerpo)."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE Project (204 owner/ADMIN | 403 otro)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "1"]
+            },
+            "description": "Solo ADMIN o el owner. Con ana (owner del 1) o admin -> 204; con luis -> 403; sin token -> 401."
+          },
+          "response": []
+        },
+        {
+          "name": "GET Tasks de un proyecto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projects/1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "1", "tasks"]
+            },
+            "description": "Tareas de un proyecto (TaskResponse)."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Task bajo proyecto (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tarea de la demo\",\n  \"description\": \"Con assignee para poder completarla\",\n  \"priority\": \"HIGH\",\n  \"assigneeId\": 1,\n  \"dueDate\": \"2099-12-31\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projects/1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["projects", "1", "tasks"]
+            },
+            "description": "Crea una tarea bajo el proyecto 1. 201 + Location: /tasks/{id}. Nace en TODO."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "description": "CRUD de tareas.",
+      "item": [
+        {
+          "name": "GET Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks"]
+            },
+            "description": "Todas las tareas, ordenadas por urgencia."
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH Task status DONE (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DONE\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", "1", "status"]
+            },
+            "description": "Cambia el estado. Con assignee -> 200; a DONE sin assignee (/tasks/6/status) -> 422."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

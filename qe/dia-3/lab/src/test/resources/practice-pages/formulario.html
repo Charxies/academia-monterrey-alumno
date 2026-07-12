@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/inputs
+     (ampliado). DUEÑO: D3 (MP-1: sendKeys/clear, bug de NO limpiar,
+     submit() vs click).
+     Contrato que los tests asertan (NO cambiar sin revisar specs):
+       - #nombre viene PRECARGADO con "Texto de ejemplo": sendKeys
+         sin clear() produce concatenación visible en
+         getAttribute("value") — ese ES el bug didáctico de MP-1
+       - #edad es input type="number" (espejo de /inputs)
+       - el submit funciona igual vía click al botón que vía
+         element.submit(); el resultado se pinta en #resultado con
+         el formato "Registrado: <nombre> (<edad>)"
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  .row { margin-bottom: 1rem; }
+  label { display: block; font-weight: 600; margin-bottom: .25rem; }
+  input { width: 320px; max-width: 100%; padding: .5rem .6rem;
+          border: 1px solid #bbb; border-radius: 4px; font-size: 1rem; }
+  button { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+           padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; }
+  #resultado { font-weight: 600; color: #2c6e49; min-height: 1.5rem; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>Inputs</h3>
+
+  <form id="formulario" data-testid="formulario">
+    <div class="row">
+      <label for="nombre">Nombre</label>
+      <!-- PRECARGADO a propósito: demo del bug de escribir sin clear() -->
+      <input type="text" id="nombre" name="nombre" value="Texto de ejemplo">
+    </div>
+    <div class="row">
+      <label for="edad">Edad</label>
+      <input type="number" id="edad" name="edad">
+    </div>
+    <button type="submit" data-testid="btn-enviar">Enviar</button>
+  </form>
+
+  <p id="resultado" data-testid="resultado"></p>
+
+  <footer>Espejo local (ampliado) de the-internet.herokuapp.com/inputs — curso QE</footer>
+
+<script>
+(function () {
+  'use strict';
+  // El handler vive en el evento submit del FORM: responde igual al
+  // click del botón que a WebElement.submit() (tema de MP-1).
+  document.getElementById('formulario').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nombre = document.getElementById('nombre').value;
+    var edad = document.getElementById('edad').value;
+    document.getElementById('resultado').textContent =
+      'Registrado: ' + nombre + ' (' + (edad === '' ? 'sin edad' : edad) + ')';
+  });
+})();
+</script>
+</body>
+</html>

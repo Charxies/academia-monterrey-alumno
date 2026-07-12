@@ -1,0 +1,54 @@
+# docker-compose.prod.yml — el compose de PRODUCCIÓN (S3D4). Solución de referencia.
+#
+# Es una COPIA del docker-compose.yml de S3D2 con UN cambio de fondo en el servicio 'api':
+#
+#     build: .                                  ->   image: ghcr.io/<usuario>/taskflow-api:latest
+#
+# El prod NO construye: CONSUME la imagen que el pipeline (job build-and-push) ya publicó en GHCR.
+# Por eso el job 'deploy' hace 'compose -f docker-compose.prod.yml pull api' (baja la imagen nueva) y
+# luego 'up -d' — cero compilación en la EC2 (1 GB de RAM: no aguanta un build de Maven). Contrasta
+# con el docker-compose.yml de dev, que SÍ tiene 'build: .' para iterar en tu laptop.
+#
+# <usuario>: SUSTITUIR por tu owner de GitHub EN MINÚSCULAS (las refs de imagen exigen minúsculas).
+#   Ej.: ghcr.io/anagarcia/taskflow-api:latest
+#
+# 12-factor (factor III): ningún secreto vive aquí. Todo llega del .env de la EC2 (creado en el
+# warm-up: 'cp .env.example .env' + rellenar). El .env NUNCA se commitea (.gitignore lo cubre).
+services:
+  api:
+    image: ghcr.io/<usuario>/taskflow-api:latest   # <-- SUSTITUIR <usuario> (owner de GitHub, minúsculas)
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker         # activa application-docker.yml (Postgres)
+      # La app lee DB_* (application-docker.yml). Defaults = el contenedor 'db' de este compose.
+      # Para RDS: setea DB_HOST/DB_PORT/DB_NAME en el .env y la MISMA imagen apunta allá (S3D3).
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}              # lo usa la APP (runtime), no el pipeline: vive en la EC2
+    depends_on:
+      db:
+        condition: service_healthy           # espera a que Postgres ACEPTE conexiones (dolor de D2)
+    restart: unless-stopped                  # en prod: si el contenedor cae, Docker lo relevanta
+  db:
+    # Camino canónico del curso: Postgres en la propia EC2. Quien use RDS puede omitir este servicio
+    # y apuntar DB_HOST al endpoint de RDS (las env vars de 'api' ya lo permiten).
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data       # el estado de la BD sobrevive a 'down'/'up' (no a 'down -v')
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pgdata:

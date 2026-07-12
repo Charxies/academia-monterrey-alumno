@@ -1,0 +1,87 @@
+# =============================================================================
+# ci-cd.yml — ESQUELETO del pipeline de TaskFlow (S3D4). Complétalo: TODO-1 .. TODO-9.
+#
+# Cópialo a TU repo en .github/workflows/ci-cd.yml (la ruta EXACTA importa: ni 'workflow/'
+# sin s, ni otra carpeta -> el workflow no dispara, dolor 3).
+#
+# Es YAML VÁLIDO tal cual (Actions lo parsea sin error), PERO los steps con "echo TODO-n"
+# son placeholders: no hacen el trabajo real hasta que los reemplaces. Ve TODO por TODO.
+# La solución completa vive en solucion/ci-cd.yml — intenta primero, ábrela después.
+# =============================================================================
+name: CI/CD
+
+# TODO-1 (on:): este workflow debe dispararse en push a main Y en cada pull_request a main.
+#   Abajo ya está el bloque 'push'. DESCOMENTA/añade el bloque 'pull_request' (mismo branches: [main]).
+on:
+  push:
+    branches: [main]
+  # pull_request:
+  #   branches: [main]
+
+jobs:
+  test:                                   # CI: corre en push a main Y en cada PR
+    runs-on: ubuntu-latest                # runner = VM efímera Linux (nace limpia, muere al terminar)
+    steps:
+      - uses: actions/checkout@v4         # trae tu código al runner
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          # TODO-2 (cache): añade aquí la línea  cache: maven
+          #   Sin ella cada run baja medio internet (dolor 2); con ella verás en el log de este
+          #   step 'Cache restored from key ...' a partir de la 2a corrida.
+      - name: Suite completa + gate JaCoCo
+        # TODO-3 (verify): reemplaza el echo por el comando que corre TODA la suite + el gate de D1
+        #   (el mismo que corres local; es el gate que hasta ayer ejecutabas a mano).
+        run: echo "TODO-3 reemplaza este echo por  mvn -B verify"
+      # TODO-4 (artifact): añade un step que suba el reporte de cobertura como artifact.
+      #   uses: actions/upload-artifact@v4 · if: always() (el reporte importa MÁS cuando el run
+      #   está rojo) · with: name reporte-jacoco y path target/site/jacoco/  ->  borra el echo de abajo.
+      - name: Reporte de cobertura como artifact
+        if: always()
+        run: echo "TODO-4 reemplaza por actions/upload-artifact@v4 con name y path"
+
+  build-and-push:                         # CD 1/2: solo en push a main, nunca en PRs
+    needs: test                           # no publica imagen si el job test falló
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # TODO-5 (permissions): el GITHUB_TOKEN por default puede ser read-only -> denied al push a GHCR
+    #   (dolor 1). Añade AQUÍ, a nivel job:
+    #       permissions:
+    #         contents: read
+    #         packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nombre de imagen (owner en minúsculas)
+        # el owner de GitHub puede tener mayúsculas; las refs de imagen exigen minúsculas (dolor 6).
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/taskflow-api" >> "$GITHUB_ENV"
+      - name: Login a GHCR
+        # TODO-6 (login): loguéate a ghcr.io con el GITHUB_TOKEN vía --password-stdin y usuario
+        #   ${{ github.actor }}. Pista:  echo "TOKEN" | docker login ghcr.io -u USER --password-stdin
+        run: echo "TODO-6 reemplaza por el docker login a ghcr.io con secrets.GITHUB_TOKEN"
+      - name: Build y push (tags SHA + latest)
+        # TODO-7 (tags): construye la imagen con DOS tags y publícala.
+        #   docker build -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .   (SHA inmutable + latest)
+        #   docker push --all-tags "$IMAGE"
+        run: echo "TODO-7 reemplaza por docker build con dos tags y docker push --all-tags"
+
+  deploy:                                 # CD 2/2: guardado tras la var — en Plan B queda skipped
+    needs: build-and-push
+    # TODO-8 (guard): guarda este job tras la variable del repo:
+    #       if: vars.DEPLOY_TARGET == 'ec2'
+    #   Plan A la pone en 'ec2' (el job corre); Plan B la deja sin setear (job 'skipped', pipeline
+    #   sigue VERDE). Reemplaza el placeholder 'if: false' de abajo por esa condición.
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1
+        # TODO-9 (with): completa host/username/key y el script del deploy.
+        #   host: ${{ vars.EC2_HOST }}        (config -> var)
+        #   username: ${{ vars.EC2_USER }}    (config -> var)
+        #   key: ${{ secrets.EC2_SSH_KEY }}   (credencial -> secret, SIEMPRE)
+        #   script: | cd ~/taskflow-api ; git pull ; compose -f docker-compose.prod.yml pull api ; up -d
+        with:
+          host: TODO
+          username: TODO
+          key: TODO
+          script: echo "TODO-9 completa host/username/key (arriba) y el script real del deploy"

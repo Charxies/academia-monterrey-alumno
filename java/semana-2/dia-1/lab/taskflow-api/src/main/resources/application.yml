@@ -1,0 +1,4 @@
+# application.yml — convención del curso desde hoy (renombrado del application.properties del Initializr).
+spring:
+  application:
+    name: taskflow-api

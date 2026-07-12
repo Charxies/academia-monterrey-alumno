@@ -1,0 +1,29 @@
+# docker-compose.dynamodb.yml — DynamoDB LOCAL para la demo NoSQL de S3D4 (Plan B, sin cuenta AWS).
+#
+# Levanta 'amazon/dynamodb-local' (la MISMA API de DynamoDB, corriendo en tu máquina, gratis y sin
+# credenciales reales) en el puerto 8000. Los comandos de guion-dynamodb.sh son IDÉNTICOS a los de
+# AWS real: solo cambia el flag  --endpoint-url http://localhost:8000  y unas credenciales dummy.
+#
+# Uso:
+#   docker compose -f docker-compose.dynamodb.yml up -d      # levanta dynamodb-local en :8000
+#   ./guion-dynamodb.sh                                       # corre la demo contra el endpoint local
+#   docker compose -f docker-compose.dynamodb.yml down        # apaga (nada que borrar: es -inMemory)
+#
+# '-inMemory': la tabla vive en RAM y se pierde al apagar el contenedor (perfecto para una demo
+# desechable). '-sharedDb': una sola BD compartida sin importar la región/credenciales que mandes,
+# así que las creds dummy 'funcionan'. Quítale '-inMemory' y añade un volumen si quieres persistir.
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -inMemory -sharedDb"
+    # Red nombrada para el "Camino B" del README (contenedor amazon/aws-cli en la MISMA red,
+    # resolviendo a http://dynamodb-local:8000 sin instalar la CLI en tu máquina).
+    networks:
+      - dynamodb-demo
+
+networks:
+  dynamodb-demo:
+    name: dynamodb-demo

@@ -1,0 +1,140 @@
+{
+  "info": {
+    "name": "TaskFlow API",
+    "description": "Coleccion del capstone TaskFlow (STARTER S2D3). Trae los GET felices heredados de D2; HOY gana la carpeta 'Errores' (415/400/404/422) y las peticiones de escritura conforme completas el CRUD. Variable {{baseUrl}} = http://localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "GET Tasks",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// STRETCH (germen de S4): primer test en la pestaña Tests de Postman.",
+              "pm.test(\"status 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks",
+          "host": ["{{baseUrl}}"],
+          "path": ["tasks"]
+        },
+        "description": "Todas las tareas sembradas por el DataSeeder, ordenadas por urgencia."
+      },
+      "response": []
+    },
+    {
+      "name": "GET Tasks por status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks?status=DONE",
+          "host": ["{{baseUrl}}"],
+          "path": ["tasks"],
+          "query": [
+            {
+              "key": "status",
+              "value": "DONE",
+              "description": "Valores válidos (case-sensitive, en MAYÚSCULAS): TODO, IN_PROGRESS, DONE. Un valor que no matchea el enum -> 400."
+            }
+          ]
+        },
+        "description": "Filtro opcional por estado. ?status=done en minúscula da 400 (la conversión String->enum es case-sensitive)."
+      },
+      "response": []
+    },
+    {
+      "name": "GET Task por id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["tasks", "1"]
+        },
+        "description": "Una tarea por id. 200 con la tarea si existe."
+      },
+      "response": []
+    },
+    {
+      "name": "GET Task por id (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks/9999",
+          "host": ["{{baseUrl}}"],
+          "path": ["tasks", "9999"]
+        },
+        "description": "Id inexistente -> 404 LIMPIO (sin stack trace en la respuesta). Ejemplo guardado abajo."
+      },
+      "response": [
+        {
+          "name": "404 Not Found",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["tasks", "9999"]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "text",
+          "header": [],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "GET Projects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/projects",
+          "host": ["{{baseUrl}}"],
+          "path": ["projects"]
+        },
+        "description": "Todos los proyectos sembrados (incluye el proyecto 3, sin tareas)."
+      },
+      "response": []
+    },
+    {
+      "name": "GET Tasks de un proyecto",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/projects/1/tasks",
+          "host": ["{{baseUrl}}"],
+          "path": ["projects", "1", "tasks"]
+        },
+        "description": "Tareas de un proyecto. Proyecto inexistente -> 404; proyecto existente sin tareas (prueba /projects/3/tasks) -> 200 con []."
+      },
+      "response": []
+    }
+  ]
+}

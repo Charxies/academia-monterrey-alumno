@@ -1,0 +1,13 @@
+# application.yml — la config del proyecto en YAML (MP-8). Sustituye al application.properties del
+# Initializr, que se BORRA (si conviven, .properties pisa al .yml -> punto de dolor 9).
+#
+# YAML: jerarquía por INDENTACIÓN de 2 espacios, nunca tabs. Hoy son 3 llaves de juguete; el archivo
+# crece toda la semana (D4 agrega el datasource de H2, D5 el secreto del JWT).
+server:
+  port: 8080                 # explícito: el puerto donde escucha Tomcat (juguete de MP-8: cambiar a 8081 y volver)
+
+spring:
+  application:
+    name: taskflow-api
+  main:
+    banner-mode: "off"       # sin el banner ASCII de Spring al arrancar (log más limpio)

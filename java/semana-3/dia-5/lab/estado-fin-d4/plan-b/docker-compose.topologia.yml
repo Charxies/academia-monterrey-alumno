@@ -1,0 +1,63 @@
+# ============================================================================
+# PLAN B — Topología AWS simulada en LOCAL con Docker (S3D3) · RESUELTO
+#
+# DOS redes separadas simulan los Security Groups de AWS:
+#   'edge' = donde se da la cara a internet (la API publica el 8080)
+#   'data' = red PRIVADA donde vive la BD (nadie del host la alcanza)
+#
+# Prueba de la "muralla" (desde el HOST, una vez arriba):
+#   psql -h localhost -p 5432 -U taskflow taskflow   -> FALLA: 'db' no publica puertos
+#                                                       (= RDS con "Public access: NO", sin IP pública)
+#   la API sí llega a 'db' por su NOMBRE dentro de 'data'  -> Swagger arriba en localhost:8080
+#
+# Mapa mental (cada pieza de compose ≈ su equivalente AWS):
+#   red 'data' privada            ≈ subnet privada / VPC sin ruta a internet
+#   'db' SIN 'ports:'             ≈ RDS con "Public access: NO" (sin IP pública)
+#   membresía de red (networks:)  ≈ Security Group (quién puede hablar con quién)
+#   'api' en 'edge' + 'data'      ≈ la EC2 que da la cara a internet Y alcanza la BD
+# ============================================================================
+services:
+  api:
+    image: taskflow-api:local          # la MISMA imagen de D2 (no se reconstruye)
+    ports:
+      - "8080:8080"                     # da la cara en 'edge' (como el 8080 público de la EC2)
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: db                       # llega a la BD por su NOMBRE de servicio, no por localhost
+      DB_PORT: "5432"
+      DB_NAME: taskflow
+      DB_USER: ${POSTGRES_USER:-taskflow}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-taskflow}
+      JWT_SECRET: ${JWT_SECRET:-plan-b-secret-de-64-caracteres-solo-para-laboratorio-local-000}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:                           # 'api' es la ÚNICA pieza que cruza: vive en AMBAS redes
+      - edge
+      - data
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-taskflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taskflow}
+      POSTGRES_DB: taskflow
+    # SIN 'ports:' a propósito — no se publica ningún puerto al host = sin IP pública (RDS "Public access: NO")
+    networks:                           # 'db' vive SOLO en la red privada 'data'; nunca en 'edge'
+      - data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-taskflow} -d taskflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+networks:
+  edge:
+    driver: bridge     # red "expuesta": la cara pública (la API publica su 8080 aquí)
+  data:
+    driver: bridge     # red PRIVADA: la BD vive aquí y NADIE del host la alcanza
+
+# --- Mini-lab de síntomas (la tabla de diagnóstico, en local): ---
+#   docker compose -f docker-compose.topologia.yml pause db   -> la API: 'Connection timed out'
+#       (el paquete muere en silencio, como un SG que no deja entrar)  ->  ... unpause db
+#   apunta DB_PORT=5433 y reinicia la api  -> 'Connection refused' (llegaste y no hay nadie escuchando)

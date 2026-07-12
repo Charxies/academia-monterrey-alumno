@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- spring-boot-starter-parent: el "padre" que GESTIONA las versiones de todas las dependencias
+         de Spring (por eso abajo no llevan <version>) y la config de plugins. Línea 3.5.x FIJADA
+         para toda la S2; el instructor fija la patch exacta en el checklist de arranque. -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/> <!-- lo busca en el repositorio, no en un pom padre local -->
+    </parent>
+
+    <groupId>com.taskflow</groupId>
+    <artifactId>taskflow-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>taskflow-api</name>
+    <description>TaskFlow API - S2D1: dominio de S1 gestionado por Spring (IoC/DI)</description>
+
+    <properties>
+        <!-- Java 21: seleccionado explícito en el wizard (no el default del sitio). -->
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- spring-boot-starter: el núcleo de Spring Boot (contenedor + logging + autoconfig). SIN
+             spring-boot-starter-web HOY (decisión del día): la app arranca, corre los runners y
+             termina. El web llega en D2. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-test: JUnit 5 + AssertJ + Mockito + spring-test. scope test. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- spring-boot-maven-plugin: 'mvn spring-boot:run' arranca la app; empaqueta el jar
+                 ejecutable. Hereda su config del parent. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

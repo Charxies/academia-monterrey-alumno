@@ -1,0 +1,26 @@
+# SecurityConfig.diff — la ÚNICA línea de config del PR de prueba (S3D4, integrador fase 2)
+#
+# El PR feat/endpoint-info añade InfoController + InfoControllerTest y ESTA línea a SecurityConfig:
+# hacer /info público. Es el "repaso relámpago de S2D5": una regla por URL, en orden (de lo
+# específico a lo general), ANTES de anyRequest().authenticated().
+#
+# Sin ella, /info hereda anyRequest().authenticated() -> 401 sin token, y el curl del deploy falla.
+# El test (200 SIN token) se escribe PRIMERO y ROJO; esta línea lo pone verde.
+#
+# Aplicar en: src/main/java/com/taskflow/config/SecurityConfig.java, dentro de
+# authorizeHttpRequests(auth -> auth ...), junto a los otros permitAll (el ORDEN da igual entre
+# permitAll; lo que NO puede es ir DESPUÉS de anyRequest()).
+
+--- a/src/main/java/com/taskflow/config/SecurityConfig.java
++++ b/src/main/java/com/taskflow/config/SecurityConfig.java
+@@ -54,6 +54,10 @@ public class SecurityConfig {
+                 .authorizeHttpRequests(auth -> auth
+                         // Público: login/registro y las herramientas de doc/consola.
+                         .requestMatchers("/auth/**").permitAll()
++                        // /info: metadatos del servicio (nombre + versión) — PÚBLICO para el smoke test
++                        // del deploy (curl http://<EC2>:8080/info). Sin esta línea heredaría
++                        // anyRequest().authenticated() -> 401 sin token (S3D4, integrador fase 2).
++                        .requestMatchers("/info").permitAll()
+                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                         .requestMatchers("/h2-console/**").permitAll()
+                         // Todo lo demás exige autenticación (sin token -> 401).

@@ -1,0 +1,32 @@
+# application.yml — config del proyecto (YAML: jerarquía por INDENTACIÓN de 2 espacios, nunca tabs).
+#
+# Estado STARTER (D4): SIN el bloque de persistencia todavía. Con spring-boot-starter-data-jpa + h2 en
+# el classpath pero sin datasource configurado, Spring Boot autoconfigura una H2 EN MEMORIA — por eso
+# la app ARRANCA igual. Ese es el contraste de MP-1: "miren, sin config ya hay una BD; ahora la hacemos
+# NUESTRA y en ARCHIVO". El bloque de abajo se DESCOMENTA y completa en MP-1.
+server:
+  port: 8080
+
+spring:
+  application:
+    name: taskflow-api
+  main:
+    banner-mode: "off"
+
+  # ============================================================================================
+  # TODO (MP-1) — Persistencia con H2 en ARCHIVO. Descomenta y completa este bloque. La consola H2
+  # usará EXACTAMENTE la url de datasource (letra por letra). Referencia: bloque canónico en alumno.md.
+  # ============================================================================================
+  # datasource:
+  #   url: jdbc:h2:file:./data/taskflow      # H2 en ARCHIVO (ruta relativa al working dir, como el CSV de S1D5)
+  #   username: sa
+  #   password: ""
+  # jpa:
+  #   hibernate:
+  #     ddl-auto: update                     # dev local: ajusta el esquema sin borrar datos (5 valores: ver tabla PM-1)
+  #   show-sql: true                         # el SQL generado se LEE, no se ignora (regla del día)
+  #   open-in-view: false                    # regla del curso desde hoy (se explica con el error de lazy en PM)
+  # h2:
+  #   console:
+  #     enabled: true                        # consola web SQL en /h2-console
+  #     path: /h2-console

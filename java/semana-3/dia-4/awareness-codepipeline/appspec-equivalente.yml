@@ -1,0 +1,43 @@
+# appspec-equivalente.yml — el "job deploy de ustedes", traducido a AWS CodeDeploy.
+#
+# ⚠ AWARENESS — NO se construye ni se corre en clase. Ábrelo LADO A LADO con el job 'deploy' de tu
+# ci-cd.yml para ver la equivalencia.
+#
+# Tu job 'deploy' era un ssh (appleboy/ssh-action) que hacía, a mano, en la EC2:
+#     cd ~/taskflow-api && git pull
+#     docker compose -f docker-compose.prod.yml pull api
+#     docker compose -f docker-compose.prod.yml up -d
+#
+# CodeDeploy hace lo MISMO pero con un AGENTE instalado en la EC2 (codedeploy-agent) que ejecuta
+# estos HOOKS por fase. No hay llave SSH que copiar: la instancia ASUME un rol IAM (contraparte de
+# tus secrets/vars). Y CodeDeploy suma despliegues BLUE/GREEN (dos flotas, cambio de tráfico atómico),
+# algo que tu ssh de un paso no hace.
+#
+# Mapeo directo:
+#   job deploy (ssh-action)          ->  hooks de este appspec, ejecutados por el agente en la EC2
+#   'docker compose pull api'        ->  hook BeforeInstall  (traer la imagen nueva de ECR)
+#   'docker compose up -d'           ->  hook ApplicationStart (levantar el contenedor)
+#   curl /info (smoke test)          ->  hook ValidateService (verificar que la versión está viva)
+
+version: 0.0
+os: linux
+
+# Qué archivos copia el agente a la instancia (aquí, el compose de prod y los scripts de hook).
+files:
+  - source: docker-compose.prod.yml
+    destination: /home/ec2-user/taskflow-api
+
+# Los hooks: el agente CodeDeploy corre estos scripts EN la EC2, en este orden.
+hooks:
+  BeforeInstall:
+    - location: scripts/pull-imagen.sh          # docker compose -f docker-compose.prod.yml pull api
+      timeout: 300
+      runas: ec2-user
+  ApplicationStart:
+    - location: scripts/up.sh                    # docker compose -f docker-compose.prod.yml up -d
+      timeout: 300
+      runas: ec2-user
+  ValidateService:
+    - location: scripts/smoke-test.sh            # curl -f http://localhost:8080/info  (la versión viva)
+      timeout: 120
+      runas: ec2-user

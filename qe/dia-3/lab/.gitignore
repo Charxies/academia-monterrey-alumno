@@ -1,0 +1,14 @@
+# Build (Maven / Java)
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Selenium Manager cachea aquí los drivers descargados (no es fuente del repo)
+.cache/selenium/

@@ -1,0 +1,16 @@
+# Secretos 12-factor (S3D2): el .env con credenciales y JWT_SECRET NUNCA se commitea.
+# Solo viaja .env.example (plantilla sin valores reales). DoD-(e) del día.
+.env
+
+# Build
+target/
+
+# Base de datos H2 en ARCHIVO (runtime). La BD NO se commitea — contraste explícito con el
+# tasks.csv de S1D5, que SÍ viajaba en el repo. Aquí los datos son estado local de dev, no fuente.
+data/*.mv.db
+data/*.trace.db
+
+# IDE
+.idea/
+*.iml
+.vscode/

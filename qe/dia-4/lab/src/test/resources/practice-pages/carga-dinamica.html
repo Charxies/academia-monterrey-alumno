@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/dynamic_loading
+     (ejemplos 1 y 2 en UNA página vía query param). DUEÑO: D3
+     (MP-7 demo anti-patrón sleep, MP-8 presence vs visibility).
+     Modos:
+       carga-dinamica.html?modo=oculto      (default) → ejemplo 1:
+         #finish YA existe en el DOM pero display:none
+         (presenceOfElementLocated pasa YA; visibility espera)
+       carga-dinamica.html?modo=inexistente → ejemplo 2:
+         #finish NO está en el DOM; se AGREGA al terminar la carga
+     Contrato (ids de the-internet):
+       - #start con botón "Start"; #loading (spinner) visible durante
+         la carga; #finish con <h4>Hello World!</h4> al terminar
+       - retraso REAL de 2.5 s (setTimeout) — las esperas explícitas
+         tienen algo que esperar; sleep(3000) "pasa" pero desperdicia
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  button { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+           padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; }
+  #loading { display: flex; align-items: center; gap: .75rem; color: #555; }
+  .spinner { width: 28px; height: 28px; border: 4px solid #cfe0d8;
+             border-top-color: #2c6e49; border-radius: 50%;
+             animation: girar .8s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <div class="example">
+    <h3>Dynamically Loaded Page Elements</h3>
+    <h4 id="descripcion-ejemplo"></h4>
+
+    <div id="start">
+      <button>Start</button>
+    </div>
+
+    <div id="loading" style="display:none">
+      <div class="spinner"></div> Cargando…
+    </div>
+
+    <div id="finish" style="display:none">
+      <h4>Hello World!</h4>
+    </div>
+  </div>
+
+  <footer>Espejo local de the-internet.herokuapp.com/dynamic_loading — curso QE
+    (<a href="carga-dinamica.html?modo=oculto">?modo=oculto</a> ·
+     <a href="carga-dinamica.html?modo=inexistente">?modo=inexistente</a>)</footer>
+
+<script>
+(function () {
+  'use strict';
+  var CARGA_MS = 2500;   // retraso REAL dentro del rango 0.5-3 s que fija la spec de D3
+  var params = new URLSearchParams(location.search);
+  var modo = params.get('modo') || 'oculto';
+  var descripcion = document.getElementById('descripcion-ejemplo');
+
+  if (modo === 'inexistente') {
+    // Ejemplo 2: el elemento NO existe hasta que termina la carga.
+    // Se quita durante el parseo (script síncrono): cuando driver.get()
+    // retorna, #finish ya NO está en el DOM.
+    var finish = document.getElementById('finish');
+    finish.parentNode.removeChild(finish);
+    descripcion.textContent =
+      'Ejemplo 2: el elemento se AGREGA al DOM al terminar la carga (?modo=inexistente)';
+  } else {
+    descripcion.textContent =
+      'Ejemplo 1: el elemento YA está en el DOM pero oculto (?modo=oculto)';
+  }
+
+  document.querySelector('#start button').addEventListener('click', function () {
+    document.getElementById('start').style.display = 'none';
+    document.getElementById('loading').style.display = 'flex';
+
+    setTimeout(function () {
+      document.getElementById('loading').style.display = 'none';
+      if (modo === 'inexistente') {
+        var nuevo = document.createElement('div');
+        nuevo.id = 'finish';
+        nuevo.innerHTML = '<h4>Hello World!</h4>';
+        document.querySelector('.example').appendChild(nuevo);
+      } else {
+        document.getElementById('finish').style.display = 'block';
+      }
+    }, CARGA_MS);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+id,title,description,status,priority,projectId,assigneeId,dueDate
+1,Configurar repositorio,Setup inicial en GitHub,DONE,HIGH,1,1,2026-06-20
+2,Diseñar modelo Task,Entidad central del dominio,DONE,MED,1,2,2026-06-28
+3,Implementar API de tareas,Endpoints CRUD de Task,IN_PROGRESS,HIGH,1,1,2026-07-05
+4,Documentar API REST,Swagger y ejemplos,IN_PROGRESS,MED,1,3,2026-07-20
+5,Escribir tests del dominio,,TODO,LOW,1,,2026-07-25
+6,Revisar backlog,Priorizar pendientes,TODO,MED,1,2,

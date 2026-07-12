@@ -1,0 +1,260 @@
+### Registro de usuarios de prueba (re-ejecutable)
+# Si el usuario ya existe (409 Conflicto), el script continúa.
+
+# @name registerDemo
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo",
+  "email": "demo@taskflow.dev",
+  "password": "Demo123!"
+}
+
+<> 2024-01-18T103123.201.json
+
+###
+
+# @name registerAna
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "ana",
+  "email": "ana@taskflow.dev",
+  "password": "Ana1234!"
+}
+
+<> 2024-01-18T103123.201.json
+
+### Login y captura de token
+# El manejador de respuesta guarda el token JWT para las siguientes peticiones.
+
+# @name loginDemo
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "demo",
+  "password": "Demo123!"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token || response.body.accessToken || response.body.jwt);
+    client.log("Token para 'demo' capturado.");
+%}
+
+<> 2024-01-18T103123.200.json
+
+###
+### Creación de Proyectos
+# Todas las peticiones a partir de aquí usan el token capturado.
+
+# @name createProject1
+POST http://localhost:8080/projects
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Rediseño del sitio",
+  "description": "Actualizar el frontend y la experiencia de usuario de la web principal."
+}
+
+> {%
+    client.global.set("project1_id", response.body.id);
+    client.log("Proyecto 1 creado con ID: " + response.body.id);
+%}
+
+###
+
+# @name createProject2
+POST http://localhost:8080/projects
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "API v2",
+  "description": "Desarrollar la segunda versión del API con nuevas funcionalidades."
+}
+
+> {%
+    client.global.set("project2_id", response.body.id);
+    client.log("Proyecto 2 creado con ID: " + response.body.id);
+%}
+
+###
+### Creación de Tareas
+
+# Tareas para "Rediseño del sitio" (project1)
+
+# @name createTask1_1
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Definir paleta de colores",
+  "description": "Investigar y proponer 3 paletas de colores para la nueva marca.",
+  "priority": "HIGH"
+}
+
+###
+
+# @name createTask1_2
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Maquetar la nueva home page",
+  "description": "Crear el HTML y CSS de la página de inicio según los mockups.",
+  "priority": "HIGH",
+  "dueDate": "{{$localDate timezone='UTC' offset='5' format='yyyy-MM-dd'}}",
+  "assigneeId": 1
+}
+
+> {%
+    // Esta tarea se llevará a DONE con un PATCH final. La regla del capstone
+    // (no DONE sin assignee) EXIGE que tenga assigneeId, por eso se crea con uno.
+    client.global.set("task_to_be_done_id", response.body.id);
+    client.log("Tarea para completar creada con ID: " + response.body.id);
+%}
+
+###
+
+# @name createTask1_3
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Implementar formulario de contacto",
+  "description": "El formulario debe tener validación en cliente y enviar los datos al backend.",
+  "priority": "MED",
+  "assigneeId": 2
+}
+
+###
+
+# @name createTask1_4
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Configurar análisis de tráfico",
+  "description": "Integrar Google Analytics o una alternativa open source.",
+  "priority": "LOW",
+  "dueDate": "{{$localDate timezone='UTC' offset='10' format='yyyy-MM-dd'}}"
+}
+
+###
+
+# @name createTask1_5
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Test de usabilidad con usuarios piloto",
+  "description": "Tarea sin asignar para probar la regla de negocio de 'DONE'.",
+  "priority": "MED"
+}
+
+###
+
+# @name createTask1_6
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Revisar copy de la sección 'Sobre nosotros'",
+  "description": "Asegurar que el texto sea claro, conciso y sin errores.",
+  "priority": "LOW",
+  "assigneeId": 1
+}
+
+###
+
+# @name createTask1_7
+# Tarea que se llevará a IN_PROGRESS con un PATCH (el 'status' en el POST puede
+# ser ignorado por el API del capstone, cuyo contrato de creación no lo incluye).
+POST http://localhost:8080/projects/{{project1_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Optimizar imágenes para la web",
+  "description": "Comprimir todas las imágenes del sitio sin perder calidad visible.",
+  "priority": "MED",
+  "assigneeId": 1
+}
+
+> {%
+    client.global.set("task_to_be_in_progress_id", response.body.id);
+    client.log("Tarea para IN_PROGRESS creada con ID: " + response.body.id);
+%}
+
+
+# Tarea para "API v2" (project2)
+
+###
+
+# @name createTask2_1
+POST http://localhost:8080/projects/{{project2_id}}/tasks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "title": "Definir el esquema OpenAPI v2",
+  "description": "Documentar todos los nuevos endpoints, modelos y códigos de respuesta.",
+  "priority": "HIGH",
+  "assigneeId": 1
+}
+
+###
+### Actualización de estado
+# Se llevan dos tareas a sus estados finales vía PATCH para tener los 3 estados
+# representados (TODO ya está presente en varias tareas recién creadas).
+
+# @name inProgressTask
+# Pasa una tarea a IN_PROGRESS.
+PATCH http://localhost:8080/tasks/{{task_to_be_in_progress_id}}/status
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "status": "IN_PROGRESS"
+}
+
+###
+
+# @name completeTask
+# Pasa una tarea a DONE. Funciona porque la tarea tiene un 'assigneeId'.
+PATCH http://localhost:8080/tasks/{{task_to_be_done_id}}/status
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "status": "DONE"
+}
+
+###
+# Imprimir IDs para referencia manual
+# @name getProjectsAndTasks
+GET http://localhost:8080/projects
+Authorization: Bearer {{auth_token}}
+
+> {%
+    client.log("
+--- IDs generados ---");
+    const projects = response.body;
+    projects.forEach(p => {
+        client.log(`Project: '${p.name}' (ID: ${p.id})`);
+    });
+    client.log(`Usuario 'demo' tiene ID: 1 (asumido)`);
+    client.log(`Usuario 'ana' tiene ID: 2 (asumido)`);
+    client.log("---------------------
+");
+%}

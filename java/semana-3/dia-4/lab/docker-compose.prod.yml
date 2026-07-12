@@ -1,0 +1,46 @@
+# docker-compose.prod.yml — ESQUELETO del compose de PRODUCCIÓN (S3D4). Complétalo (TODO).
+#
+# Parte del docker-compose.yml de S3D2, con UN cambio de fondo en 'api': el prod NO construye
+# (build: .), CONSUME la imagen que el pipeline ya publicó en GHCR. Por eso el job 'deploy' hace
+# 'compose -f docker-compose.prod.yml pull api' + 'up -d' — cero build en la EC2 (1 GB de RAM).
+#
+# Cópialo a la RAÍZ de tu repo taskflow-api-<usuario>. La solución está en solucion/docker-compose.prod.yml.
+services:
+  api:
+    # TODO (image): reemplaza la línea de abajo por la imagen de TU repo en GHCR, owner en MINÚSCULAS:
+    #     image: ghcr.io/<tu-usuario>/taskflow-api:latest
+    #   Fíjate que NO hay 'build: .': el prod consume, no compila.
+    image: ghcr.io/TODO-tu-usuario/taskflow-api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker         # activa application-docker.yml (Postgres)
+      # La app lee DB_* (application-docker.yml). Defaults = el contenedor 'db' de este compose.
+      # Para RDS: setea DB_HOST/DB_PORT/DB_NAME en el .env y la MISMA imagen apunta allá (S3D3).
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}              # lo usa la APP (runtime), no el pipeline: vive en la EC2
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pgdata:

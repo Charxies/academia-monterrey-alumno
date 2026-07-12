@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- LAB (starter de D5). MISMO proyecto taskflow-qa que nació en D1 y creció en D2-D4: hoy (D5)
+         el framework se vuelve HÍBRIDO (UI + API). Selenium, JUnit y Surefire se HEREDAN de D1
+         (fuente única de versiones); Allure y el javaagent de AspectJ vienen de D4. Lo NUEVO de HOY
+         son SOLO rest-assured y jackson-databind (el cliente HTTP de la capa API + su serializador
+         JSON): ya vienen en este pom para que el starter compile. -->
+    <groupId>com.taskflow.qa</groupId>
+    <artifactId>taskflow-qa</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- Java 21: 'release' fija source + target de un jalón -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- UTF-8 para que los acentos de los comentarios no se rompan en ningún SO -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versiones FIJADAS por D1 (nunca LATEST): reproducibilidad entre máquinas. -->
+        <selenium.version>4.31.0</selenium.version>
+        <junit.version>5.12.2</junit.version>
+        <surefire.version>3.5.3</surefire.version>
+
+        <!-- De D4 (probado junto con las versiones de D1 la víspera): reporting Allure. -->
+        <allure.version>2.29.0</allure.version>
+        <aspectj.version>1.9.22.1</aspectj.version>
+        <allure.maven.version>2.12.0</allure.maven.version>
+
+        <!-- NUEVAS de D5: la capa API. rest-assured trae el DSL given/when/then y los matchers de
+             Hamcrest integrados; jackson-databind serializa los records-DTO a JSON (aquí NO hay
+             Spring que lo arrastre: sin él, "no JSON serializer found in classpath"). -->
+        <restassured.version>5.4.0</restassured.version>
+        <jackson.version>2.17.1</jackson.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- BOM de Allure: fija de un jalón las versiones de todos los módulos allure-*. -->
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-bom</artifactId>
+                <version>${allure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Selenium 4: trae Selenium Manager integrado (resuelve el chromedriver SOLO,
+             sin descargar binarios a mano ni WebDriverManager). scope test. -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 (aggregator: api + params + engine). El runner del curso. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- junit-platform-launcher ALINEADO al engine 1.12.2 (viene con junit-jupiter 5.12.2).
+             Surefire 3.5.3 arrastra el launcher 1.10.3, mas viejo que el engine, y el discovery
+             revienta con "OutputDirectoryProvider not available". Fijarlo explicito lo evita. -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.12.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Allure + JUnit 5: el listener se registra SOLO vía ServiceLoader (no hay que
+             anotar nada en las clases). Versión gobernada por el allure-bom de arriba. -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- aspectjweaver: se usa como -javaagent en surefire (ver argLine). SIN él las
+             anotaciones @Step de los page objects NO se tejen y el reporte sale sin pasos. -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- RestAssured 5.4.0 (NUEVO de D5): el cliente HTTP fluido de la capa API. Trae Hamcrest
+             integrado (equalTo, hasSize, hasItem, notNullValue, containsString) para usar DENTRO de
+             then().body(...). scope test. -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${restassured.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- jackson-databind EXPLÍCITO (NUEVO de D5): serializa los records-DTO a JSON en los POST/PUT.
+             En taskflow-qa no hay Spring que lo traiga; declararlo pinta la versión y evita el
+             "Cannot serialize object because no JSON serializer found in classpath" (dolor 8). -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Surefire corre los tests JUnit 5 (clases *Test bajo src/test/java).
+                 Con -Dgroups=smoke filtra por @Tag("smoke") (suite de D1).
+                 NUEVO de D4: el argLine del javaagent de AspectJ (habilita @Step de Allure). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <!-- El javaagent teje los @Step en tiempo de ejecución. La ruta apunta al
+                         jar de aspectjweaver dentro del repositorio local de Maven. -->
+                    <argLine>-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"</argLine>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin de Allure: 'mvn allure:serve' levanta el reporte en el navegador
+                 (descarga el CLI la primera vez). reportVersion alineado al allure-bom. -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure.maven.version}</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Internet</title>
+<!-- ============================================================
+     Espejo local de https://the-internet.herokuapp.com/javascript_alerts
+     DUEÑO: D3 (MP-4 y Integrador test 5 "manejaAlertNativo").
+     ESTA PÁGINA SÍ USA alert()/confirm()/prompt() NATIVOS a propósito:
+     aquí se enseña a manejarlos (a diferencia de la UI de TaskFlow,
+     que usa modales propios precisamente por lo hostiles que son).
+     Contrato (textos EXACTOS de the-internet — el mismo test corre
+     contra ambos sin cambios):
+       - botones: "Click for JS Alert" / "Click for JS Confirm" /
+         "Click for JS Prompt" (onclick jsAlert/jsConfirm/jsPrompt)
+       - mensajes: "I am a JS Alert" / "I am a JS Confirm" /
+         "I am a JS prompt"
+       - #result: "You successfully clicked an alert" /
+         "You clicked: Ok|Cancel" / "You entered: <texto>"
+     ============================================================ -->
+<style>
+  body { margin: 2rem auto; max-width: 900px; padding: 0 1.5rem;
+         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; line-height: 1.5; }
+  ul { list-style: none; padding: 0; }
+  li { margin-bottom: .75rem; }
+  button { background: #2c6e49; color: #fff; border: 0; border-radius: 6px;
+           padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer; }
+  #result { font-weight: 600; color: #2c6e49; min-height: 1.5rem; }
+  footer { margin-top: 3rem; border-top: 1px solid #ddd; color: #888;
+           font-size: .85rem; padding-top: .75rem; }
+</style>
+</head>
+<body>
+  <h3>JavaScript Alerts</h3>
+  <p>Here are some examples of different JavaScript alerts which can be troublesome for automation.</p>
+
+  <ul>
+    <li><button onclick="jsAlert()">Click for JS Alert</button></li>
+    <li><button onclick="jsConfirm()">Click for JS Confirm</button></li>
+    <li><button onclick="jsPrompt()">Click for JS Prompt</button></li>
+  </ul>
+
+  <p id="result"></p>
+
+  <footer>Espejo local de the-internet.herokuapp.com/javascript_alerts — curso QE</footer>
+
+<script>
+'use strict';
+// Alerts NATIVOS a propósito (viven fuera del DOM: driver.switchTo().alert()).
+function jsAlert() {
+  alert('I am a JS Alert');
+  document.getElementById('result').textContent = 'You successfully clicked an alert';
+}
+
+function jsConfirm() {
+  var ok = confirm('I am a JS Confirm');
+  document.getElementById('result').textContent = 'You clicked: ' + (ok ? 'Ok' : 'Cancel');
+}
+
+function jsPrompt() {
+  var texto = prompt('I am a JS prompt');
+  document.getElementById('result').textContent = 'You entered: ' + texto;
+}
+</script>
+</body>
+</html>

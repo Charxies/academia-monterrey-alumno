@@ -1,0 +1,28 @@
+server:
+  # :8081 para NO chocar con el taskflow-api del día (:8080). Ambos pueden correr a la vez.
+  port: 8081
+
+spring:
+  application:
+    name: demo-oauth2
+
+  # Carga los secretos REALES desde application-local.yml (gitignored; se crea a partir del .example).
+  # 'optional:' -> la app arranca aunque el archivo no exista, pero el login con Google fallará hasta
+  # que lo crees con tus credenciales.
+  config:
+    import: optional:application-local.yml
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            # PLACEHOLDERS: NUNCA se commitea el secreto real. Ponlo en application-local.yml (o en las
+            # variables de entorno GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET). 'google' es un proveedor
+            # conocido por Spring Security: no hace falta configurar endpoints/authorization-uri.
+            client-id: ${GOOGLE_CLIENT_ID:REEMPLAZA-CON-TU-CLIENT-ID.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET:REEMPLAZA-CON-TU-CLIENT-SECRET}
+            scope:
+              - openid
+              - profile
+              - email

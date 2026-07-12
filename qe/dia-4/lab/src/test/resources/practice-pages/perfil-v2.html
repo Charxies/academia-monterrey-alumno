@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Perfil de usuario — TaskFlow</title>
+<!-- ============================================================
+     Página SOLO LOCAL. DUEÑO: D2 (MP-6, MP-9).
+     "Versión 2 desplegada": MISMO contenido visible que perfil-v1.html,
+     con DOS cambios típicos de un redeploy de frontend:
+       1. TODAS las clases css-* se REGENERARON (el botón ahora es
+          css-x9y8z7): el selector .css-a1b2c3 de v1 REVIENTA aquí;
+          [data-testid='btn-guardar'] sobrevive           (demo MP-6)
+       2. Un <div> CONTENEDOR DE LAYOUT extra envuelve la tarjeta:
+          el XPath absoluto /html/body/div/div/p[1] que en v1 daba el
+          email aquí resuelve a OTRO elemento (el subtítulo) y el
+          assert revienta; el relativo por data-testid sobrevive
+                                                          (demo MP-9)
+     data-testid intactos: btn-guardar, email-perfil.
+     Link "Contactar a Ana" idéntico (obj 15 corre sobre v1).
+     ============================================================ -->
+<style>
+  body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #2b2b2b; background: #f0f3f2; }
+  .css-m4n8q2 { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; }
+  .css-r7t3w9 { max-width: 420px; width: 100%; margin: 3rem auto; padding: 2rem; background: #fff;
+                border: 1px solid #ddd; border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .css-b5c1d6 { margin: 0 0 .25rem; font-size: 1.5rem; }
+  .css-f8g2h4 { color: #666; margin: 0 0 1rem; }
+  .css-j6k0l3 { margin: 1rem 0; padding: .75rem 1rem; background: #f7f7f7; border-radius: 6px; }
+  .css-n9p5q1 { margin: .3rem 0; }
+  .css-x9y8z7 { background: #2c6e49; color: #fff; border: 0; padding: .6rem 1.2rem;
+                border-radius: 6px; font-size: 1rem; cursor: pointer; }
+  .css-v2w6x0 { display: inline-block; margin-left: 1rem; color: #1566c0; }
+</style>
+</head>
+<body>
+  <!-- div contenedor NUEVO respecto a v1: rompe el XPath absoluto -->
+  <div class="css-m4n8q2">
+    <div class="css-r7t3w9">
+      <h1 class="css-b5c1d6">Ana García</h1>
+      <p class="css-f8g2h4">QA Engineer en TaskFlow</p>
+      <div class="css-j6k0l3">
+        <p class="css-n9p5q1" data-testid="email-perfil">ana.garcia@taskflow.mx</p>
+        <p class="css-n9p5q1">Monterrey, México</p>
+      </div>
+      <button class="css-x9y8z7" data-testid="btn-guardar">Guardar cambios</button>
+      <a class="css-v2w6x0" href="mailto:ana.garcia@taskflow.mx">Contactar a Ana</a>
+    </div>
+  </div>
+</body>
+</html>
