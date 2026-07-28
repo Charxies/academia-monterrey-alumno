@@ -25,6 +25,13 @@ javac -version     # debe decir "javac 21.x"
 **Community Edition** es suficiente. https://www.jetbrains.com/idea/download
 Al primer arranque, en *Project Structure → SDK*, selecciona el JDK 21. Instala el plugin de GitHub Copilot **solo cuando llegue la semana 5** (o desde ya si ya tienes licencia).
 
+> **¿Ya trabajas con Eclipse?** Puedes usarlo en las semanas 1 a 4 — nada del material depende de IntelliJ para funcionar. Pero el curso **se imparte** en IntelliJ: las instrucciones en pantalla y los atajos son los suyos, y **los atascos de IDE se resuelven en el descanso, no en vivo**. Si eliges Eclipse, esto es todo lo que cambia para ti:
+> - **Abrir cada `lab/`:** *File → Import → Existing Maven Projects* apuntando a la carpeta que tiene el `pom.xml`. No es "Open" como en IntelliJ — es el único gesto que no se adivina.
+> - **Refactors:** `Extract Interface` (S1D5), `Move` (S2D1) y `Rename` (S2D5) existen igual, en el menú **Refactor**; solo cambia el atajo.
+> - **Semana 5 (Copilot):** trabájala en **VS Code**, que instalas de todos modos ese día. Copilot para Eclipse no cubre inline chat, slash commands ni agent mode, que son el corazón de esa semana.
+> - **Semilla de datos (S2):** usa `seed/seed.sh`; el `seed.http` es del cliente HTTP de IntelliJ.
+> - **Tu `.gitignore` del día 1 (importante):** el material te dicta `target/`, `.idea/` y `*.iml`. Agrégale las cuatro de Eclipse — `.project`, `.classpath`, `.settings/` y `bin/` — o commitearás config de tu máquina en tu primer entregable, que es justo lo que esa práctica enseña a NO hacer.
+
 ## 3. Maven (obligatorio, semana 1)
 
 - **macOS:** `brew install maven`

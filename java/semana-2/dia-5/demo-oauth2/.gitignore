@@ -4,3 +4,8 @@ src/main/resources/application-local.yml
 *.log
 .idea/
 *.iml
+# Eclipse (mismo criterio: config local del IDE, no fuente)
+.project
+.classpath
+.settings/
+bin/

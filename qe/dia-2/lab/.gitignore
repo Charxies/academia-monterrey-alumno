@@ -5,6 +5,11 @@ target/
 .idea/
 *.iml
 .vscode/
+# Eclipse (mismo criterio: config local del IDE, no fuente)
+.project
+.classpath
+.settings/
+bin/
 
 # OS
 .DS_Store

@@ -15,3 +15,8 @@ data/*.trace.db
 .idea/
 *.iml
 .vscode/
+# Eclipse (mismo criterio: config local del IDE, no fuente)
+.project
+.classpath
+.settings/
+bin/
