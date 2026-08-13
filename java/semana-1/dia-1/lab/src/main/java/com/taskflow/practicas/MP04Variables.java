@@ -23,7 +23,12 @@ public class MP04Variables {
         //   boolean completada             (p. ej. false)
         //   char    inicialPrioridad       (p. ej. 'H' — char usa comillas SIMPLES)
         //   String  titulo                 (p. ej. "Configurar proyecto Maven")
-
+        int diasRestantes = 4;
+        long totalTareasHistoricas = 1_500_000L;
+        double horasEstimadas = 5.5;
+        boolean completado = false;
+        char inicialPrioridad = 'X';
+        String titulo = "Configurar proyecto Maven";
         // TODO 2: imprime título y días restantes con CONCATENACIÓN (+).
         //   Pista: System.out.println("Tarea: " + titulo + " | días: " + diasRestantes);
 
