@@ -49,7 +49,8 @@ public class MP04Variables {
         // TODO 5: declara una variable con var (el compilador infiere el tipo).
         //   Pista: var proyecto = "TaskFlow";   // infiere String
         //   Regla del curso: usa var solo cuando el tipo sea OBVIO al leer la línea.
-
+        var proyecto = "taskflow";
+        System.out.println("proyecto = " + proyecto);
         // TODO 6: declara una constante con final y UPPER_SNAKE_CASE, e imprímela.
         //   Pista: final int MAX_TAREAS_POR_DIA = 10;
 
