@@ -36,7 +36,7 @@ public class MP04Variables {
         //   Códigos: %s String, %d entero, %.1f double con 1 decimal, %b boolean,
         //   %c char, %n salto de línea portable.
         //   Pista: System.out.printf("Horas: %.1f | completada: %b%n", ...);
-
+        System.out.printf("Horas Estimadas: %.1f || completada: %b%n", horasEstimadas, completado);
         // TODO 4: arma un resumen multilínea con un TEXT BLOCK ("""...""")
         //   y rellénalo con .formatted(titulo, diasRestantes, horasEstimadas).
 
