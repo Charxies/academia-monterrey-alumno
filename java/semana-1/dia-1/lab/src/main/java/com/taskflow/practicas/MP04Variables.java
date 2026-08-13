@@ -53,7 +53,8 @@ public class MP04Variables {
         System.out.println("proyecto = " + proyecto);
         // TODO 6: declara una constante con final y UPPER_SNAKE_CASE, e imprímela.
         //   Pista: final int MAX_TAREAS_POR_DIA = 10;
-
+        final int DIAS_DE_ENTREGA_MAXIMA = 8;
+        System.out.print(DIAS_DE_ENTREGA_MAXIMA);
         // ================== ERRORES A PROPÓSITO (uno a la vez) ==================
         // TODO 7: descomenta la siguiente línea, compila y LEE el error completo:
         //   "incompatible types: String cannot be converted to int".
