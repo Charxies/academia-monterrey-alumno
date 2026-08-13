@@ -31,7 +31,7 @@ public class MP04Variables {
         String titulo = "Configurar proyecto Maven";
         // TODO 2: imprime título y días restantes con CONCATENACIÓN (+).
         //   Pista: System.out.println("Tarea: " + titulo + " | días: " + diasRestantes);
-
+        System.out.println("Titulo: " + titulo + " || Dias Restantes: "+ diasRestantes);
         // TODO 3: imprime horas estimadas y completada con printf.
         //   Códigos: %s String, %d entero, %.1f double con 1 decimal, %b boolean,
         //   %c char, %n salto de línea portable.
