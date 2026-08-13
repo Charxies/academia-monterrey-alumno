@@ -39,6 +39,12 @@ public class MP04Variables {
         System.out.printf("Horas Estimadas: %.1f || completada: %b%n", horasEstimadas, completado);
         // TODO 4: arma un resumen multilínea con un TEXT BLOCK ("""...""")
         //   y rellénalo con .formatted(titulo, diasRestantes, horasEstimadas).
+        System.out.println(""" 
+                ##Text Block ##
+                titulo = %s
+                Dias Restantes = %d
+                horasEstimadas = %.1f
+                """.formatted(titulo,diasRestantes,horasEstimadas));
 
         // TODO 5: declara una variable con var (el compilador infiere el tipo).
         //   Pista: var proyecto = "TaskFlow";   // infiere String
