@@ -27,7 +27,7 @@ public class MP09LoopsArrays {
 
         // TODO 2: imprime "Tareas DONE: X de Y" usando tu contador y estados.length.
         //   (Con este array la respuesta correcta es 3 de 8.)
-
+        System.out.printf("Tareas DONE: %d de %d\n", cuentaDone,estados.length);
         // TODO 3: imprime la lista NUMERADA con un for clásico (necesitas el índice):
         //   for (int i = 0; i < estados.length; i++) { ... }
         //   Formato de cada línea:  "1. TODO"  (ojo: i empieza en 0, la lista en 1).
