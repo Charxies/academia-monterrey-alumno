@@ -31,12 +31,13 @@ public class MP07IfPrioridad {
             //   OJO con el ORDEN de las condiciones: si preguntas primero < 7,
             //   una tarea con 1 día caería en MED y nunca llegaría a HIGH.
 
-        // TODO 3: imprime "Días restantes: X -> prioridad Y".
-
-        // TODO 4: versión ternario para un caso de DOS salidas:
-        //   String urgencia = diasRestantes < 2 ? "URGENTE" : "puede esperar";
-        //   El ternario brilla con 2 salidas; con 3+ ramas, if/else if se lee mejor.
-
-        System.out.println("MP-7: listo cuando 1 -> HIGH, 5 -> MED y 30 -> LOW.");
-    }
+            // TODO 3: imprime "Días restantes: X -> prioridad Y".
+            System.out.printf("\nDias restantes: %d -> priodidad : %s\n", diasRestantes, prioridad);
+            // TODO 4: versión ternario para un caso de DOS salidas:
+            String urgencia = diasRestantes < 2 ? "URGENTE" : "puede esperar";
+            //   El ternario brilla con 2 salidas; con 3+ ramas, if/else if se lee mejor.
+            System.out.printf(" Urgencia? = %s\n", urgencia);
+            }
+            System.out.println("MP-7: listo cuando 1 -> HIGH, 5 -> MED y 30 -> LOW.");
+        }
 }
