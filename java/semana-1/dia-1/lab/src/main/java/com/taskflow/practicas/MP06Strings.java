@@ -22,7 +22,10 @@ public class MP06Strings {
         //   - titulo.contains("JWT")     ¿contiene "JWT"? ¿y "jwt"? pruébalo
         //   - titulo.substring(0, 11)    los primeros 11 caracteres
         //   - "   ".isBlank()            ¿un String de puros espacios está "en blanco"?
-
+        System.out.printf(
+                " Titulo lenght : %d \n Titulo Upper: %s \n Titulo Lower: %s \n Titulo JWT?: %b \n Titulo sub: %s\n \"  \" blank?: %b\n",
+                titulo.length(), titulo.toUpperCase(), titulo.toLowerCase(), titulo.contains("JWT"), titulo.substring(0,11), ("  ").isBlank()
+        );
         // TODO 3: el trap de == — reprodúcelo EXACTAMENTE así:
         //   String estado1 = "DONE";
         //   String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
