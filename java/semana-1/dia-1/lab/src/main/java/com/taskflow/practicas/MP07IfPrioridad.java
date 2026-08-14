@@ -18,12 +18,18 @@ public class MP07IfPrioridad {
         // TODO 1: declara int diasRestantes = 5;
         int diasRestantes = 31;
         //   (al terminar, cámbialo a 1 y a 30 y vuelve a correr: espera HIGH, MED, LOW)
-
-        // TODO 2: con if / else if / else guarda la prioridad en un String:
-        //   String prioridad;
-        //   if (diasRestantes < 2) { ... } else if (diasRestantes < 7) { ... } else { ... }
-        //   OJO con el ORDEN de las condiciones: si preguntas primero < 7,
-        //   una tarea con 1 día caería en MED y nunca llegaría a HIGH.
+        for (int paso = 0 ; paso<diasRestantes ; diasRestantes-=5) {
+            // TODO 2: con if / else if / else guarda la prioridad en un String:
+            String prioridad;
+            if (diasRestantes < 2) {
+                prioridad = "HIGH";
+            } else if (diasRestantes < 7) {
+                prioridad = "MID";
+            } else {
+                prioridad = "LOW";
+            }
+            //   OJO con el ORDEN de las condiciones: si preguntas primero < 7,
+            //   una tarea con 1 día caería en MED y nunca llegaría a HIGH.
 
         // TODO 3: imprime "Días restantes: X -> prioridad Y".
 
