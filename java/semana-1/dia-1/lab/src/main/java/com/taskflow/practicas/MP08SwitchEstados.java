@@ -20,11 +20,12 @@ public class MP08SwitchEstados {
         //   (después pruébalo con "TODO", "DONE" y un valor inventado como "CANCELLED")
 
         // TODO 2: escribe el switch EXPRESSION. Forma general:
-        //   String etiqueta = switch (estado) {
-        //       case "TODO" -> "Por hacer";
-        //       ...
-        //       default -> ...;
-        //   };
+           String etiqueta = switch (estado) {
+               case "TODO" -> "Por hacer";
+               case "DONE" -> "Hecho";
+               case "CANCELLED" -> "cancelado";
+               default -> " En progreso";
+           };
         //   Nota el ; al final: es una EXPRESIÓN que devuelve un valor.
         //   Sin break, sin fall-through, y el compilador te obliga a cubrir todo.
 
