@@ -16,6 +16,7 @@ public class MP07IfPrioridad {
 
     public static void main(String[] args) {
         // TODO 1: declara int diasRestantes = 5;
+        int diasRestantes = 31;
         //   (al terminar, cámbialo a 1 y a 30 y vuelve a correr: espera HIGH, MED, LOW)
 
         // TODO 2: con if / else if / else guarda la prioridad en un String:
