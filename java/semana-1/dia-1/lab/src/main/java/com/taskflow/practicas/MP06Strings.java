@@ -27,9 +27,9 @@ public class MP06Strings {
                 titulo.length(), titulo.toUpperCase(), titulo.toLowerCase(), titulo.contains("JWT"), titulo.substring(0,11), ("  ").isBlank()
         );
         // TODO 3: el trap de == — reprodúcelo EXACTAMENTE así:
-        //   String estado1 = "DONE";
-        //   String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
-        //   String estado2 = "DO" + sufijo;     // se construye en tiempo de ejecución
+           String estado1 = "DONE";
+           String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
+           String estado2 = "DO" + sufijo;     // se construye en tiempo de ejecución
         //   Imprime (estado1 == estado2) y estado1.equals(estado2).
         //   ¿Por qué == da false si "se ven" iguales?
         //   Porque == compara REFERENCIAS (¿es el mismo objeto?) y equals compara CONTENIDO.
