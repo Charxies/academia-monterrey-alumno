@@ -22,8 +22,8 @@ public class MP05Operadores {
         int prom = (min1 + min2 + min3)/3;
         System.out.print(prom);//regresara un int sin decimales
         // TODO 3: comprueba la trampa mínima imprimiendo estas dos divisiones:
-        //   System.out.println(5 / 2);     // ¿2 o 2.5?
-        //   System.out.println(5 / 2.0);   // basta UN double para que la división sea double
+           System.out.println(5 / 2);     // ¿2 o 2.5?
+           System.out.println(5 / 2.0);   // basta UN double para que la división sea double
 
         // TODO 4: calcula el promedio CORRECTO en un double, de las dos formas:
         //   a) dividiendo entre 3.0
