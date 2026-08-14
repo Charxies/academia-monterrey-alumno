@@ -31,6 +31,7 @@ public class MP06Strings {
            String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
            String estado2 = "DO" + sufijo;     // se construye en tiempo de ejecución
         //   Imprime (estado1 == estado2) y estado1.equals(estado2).
+        System.out.printf("est1 == est2: %b \n est1.equals(est2): %b\n",(estado1 == estado2), estado1.equals(estado2));
         //   ¿Por qué == da false si "se ven" iguales?
         //   Porque == compara REFERENCIAS (¿es el mismo objeto?) y equals compara CONTENIDO.
 
