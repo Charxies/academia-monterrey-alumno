@@ -15,7 +15,7 @@ public class MP05Operadores {
     public static void main(String[] args) {
         // TODO 1: declara los minutos estimados de 3 tareas:
         //   int min1 = 90, min2 = 85, min3 = 78;
-
+        int min1 = 90, min2 = 85, min3  = 78;
         // TODO 2: calcula el promedio "ingenuo" en un int: (min1 + min2 + min3) / 3
         //   e imprímelo. La suma es 253, así que esperarías 84.33... ¿qué imprime?
         //   int/int DESCARTA los decimales en silencio. No avisa. No redondea.
