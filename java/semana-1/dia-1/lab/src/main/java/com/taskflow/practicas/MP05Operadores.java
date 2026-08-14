@@ -19,7 +19,8 @@ public class MP05Operadores {
         // TODO 2: calcula el promedio "ingenuo" en un int: (min1 + min2 + min3) / 3
         //   e imprímelo. La suma es 253, así que esperarías 84.33... ¿qué imprime?
         //   int/int DESCARTA los decimales en silencio. No avisa. No redondea.
-
+        int prom = (min1 + min2 + min3)/3;
+        System.out.print(prom);//regresara un int sin decimales
         // TODO 3: comprueba la trampa mínima imprimiendo estas dos divisiones:
         //   System.out.println(5 / 2);     // ¿2 o 2.5?
         //   System.out.println(5 / 2.0);   // basta UN double para que la división sea double
