@@ -17,6 +17,7 @@ public class MP08SwitchEstados {
 
     public static void main(String[] args) {
         // TODO 1: declara String estado = "IN_PROGRESS";
+        String estado = "DONE";
         //   (después pruébalo con "TODO", "DONE" y un valor inventado como "CANCELLED")
 
         // TODO 2: escribe el switch EXPRESSION. Forma general:
