@@ -29,7 +29,9 @@ public class MP05Operadores {
         //   a) dividiendo entre 3.0
         //   b) casteando: (double) (min1 + min2 + min3) / 3
         //   Imprímelo con printf y 2 decimales: %.2f
-
+        double promDouble = (3.7 + 4.2 + 1.1 )/3;
+        double promDoubleCast = (double) (min1+min2+min3)/3;
+        System.out.printf("prom double 1 = %.2f || prom double cast = %.2f \n", promDouble, promDoubleCast);
         // TODO 5: convierte un double a int con cast explícito:
         //   double horasReales = 6.9;
         //   int horasEnteras = (int) horasReales;
