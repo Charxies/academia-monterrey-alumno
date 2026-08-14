@@ -30,7 +30,7 @@ public class MP08SwitchEstados {
         //   Sin break, sin fall-through, y el compilador te obliga a cubrir todo.
 
         // TODO 3: imprime  estado + " -> " + etiqueta
-
+        System.out.printf("estado: %s \n",etiqueta);
         // TODO 4 (reto opcional): replica el bug del switch CLÁSICO: escribe un
         //   switch clásico (case X: ... break;) sobre un int y quítale UN break.
         //   Corre y observa cómo la ejecución "cae" al siguiente case (fall-through).
