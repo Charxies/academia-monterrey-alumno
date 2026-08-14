@@ -15,7 +15,7 @@ public class MP06Strings {
 
     public static void main(String[] args) {
         // TODO 1: declara String titulo = "Implementar login con JWT";
-
+        String titulo = "Implementar login con JWT";
         // TODO 2: imprime, uno por línea:
         //   - titulo.length()            ¿cuántos caracteres tiene?
         //   - titulo.toUpperCase()       (ojo: NO modifica titulo, devuelve uno nuevo)
