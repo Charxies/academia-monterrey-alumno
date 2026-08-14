@@ -19,8 +19,10 @@ public class MP09LoopsArrays {
         };
 
         // TODO 1: cuenta cuántos elementos son "DONE" con un FOR-EACH:
-        //   int cuentaDone = 0;
-        //   for (String estado : estados) { ... }
+           int cuentaDone = 0;
+           for (String estado : estados) {
+               if (estado.equals("DONE")) cuentaDone += 1;
+           }
         //   Recuerda: la comparación es con .equals("DONE"), nunca con ==.
 
         // TODO 2: imprime "Tareas DONE: X de Y" usando tu contador y estados.length.
