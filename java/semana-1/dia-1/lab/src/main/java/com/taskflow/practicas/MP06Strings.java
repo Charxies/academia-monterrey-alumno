@@ -37,7 +37,7 @@ public class MP06Strings {
 
         // TODO 4: escribe en un comentario tu regla personal de una línea para
         //   nunca volver a caer en esto. (Sugerencia: "Strings SIEMPRE con equals".)
-
+        // "Comparar Strings siempre con Equals,anotado"
         System.out.println("MP-6: listo cuando tu == dé false y tu equals dé true.");
     }
 }
