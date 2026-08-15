@@ -45,6 +45,20 @@ public class MP10Scanner {
         //       // opcion = scanner.nextInt();  y  scanner.nextLine();  <- la regla de oro
         //       // if / else if para cada opción
         //   } while (opcion != 3);
+        int opcion = 0;
+        do{
+            System.out.print("1) saludar \t2) Mostrar Edad\t3) Salir\n");
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+            if ( opcion == 1){ System.out.print("Hola!\n");}
+            else if( opcion == 2) { System.out.printf("Edad: %d\n",edad );}
+            else if( opcion == 3){System.out.print("Adios!");}
+            else { System.out.print("opcion invalida!\n");
+            }
+            scanner.nextLine();
+            System.out.println("\033[4A\033[0J");
+            System.out.flush();
+        }while(opcion != 3);
 
         // TODO 5 (para pensar): ¿qué pasa si el usuario escribe "abc" cuando pides
         //   un int? Pruébalo. En el integrador evitaremos ese crash leyendo la
