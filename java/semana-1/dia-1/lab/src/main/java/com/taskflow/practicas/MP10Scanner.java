@@ -20,9 +20,9 @@ public class MP10Scanner {
         Scanner scanner = new Scanner(System.in);
 
         // TODO 1: pide la edad e imprímela:
-        //   System.out.print("Tu edad: ");
-        //   int edad = scanner.nextInt();
-
+        System.out.print("Tu edad: ");
+        int edad = scanner.nextInt();
+        scanner.nextLine();
         // TODO 2: AHORA pide el nombre con nextLine() y corre el programa:
         //   System.out.print("Tu nombre: ");
         //   String nombre = scanner.nextLine();
