@@ -24,9 +24,9 @@ public class MP10Scanner {
         int edad = scanner.nextInt();
         scanner.nextLine();
         // TODO 2: AHORA pide el nombre con nextLine() y corre el programa:
-        //   System.out.print("Tu nombre: ");
-        //   String nombre = scanner.nextLine();
-        //   System.out.println("Nombre leído: [" + nombre + "]");
+           System.out.print("Tu nombre: ");
+           String nombre = scanner.nextLine();
+           System.out.println("Nombre leído: [" + nombre + "]");
         //   ¿Te dejó escribir? NO: imprime [] vacío. Ese es EL BUG del \n pendiente:
         //   nextInt() lee el número pero DEJA el Enter en el buffer, y tu nextLine()
         //   lee ese Enter en vez de esperar tu texto.
