@@ -64,7 +64,11 @@ public class Task {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
+    public void setStatus(TaskStatus status) throws TaskValidationException {
+        if (status == TaskStatus.DONE && assignee == null) {
+            throw new TaskValidationException(
+                    "No se puede marcar DONE una tarea sin assignee. Asígnala primero.");
+        }
         this.status = status;
     }
 
