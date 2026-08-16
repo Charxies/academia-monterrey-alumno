@@ -32,7 +32,12 @@ public class Task {
     private  Project project;
     private  User assignee;
 
-    public Task(String title, String description, TaskStatus status, Priority priority) {
+    public Task(String title, String description, TaskStatus status, Priority priority,
+                LocalDate dueDate, Project project, User assignee) throws TaskValidationException{
+        if (title == null || title.length() < 3 || title.length() > 120){
+            throw  new TaskValidationException("el titulo no puede ser vacio");
+        }
+    } {
         this.title = title;
         this.description = description;
         this.status = status;
