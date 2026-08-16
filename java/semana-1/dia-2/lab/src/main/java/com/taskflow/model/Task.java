@@ -90,6 +90,15 @@ public class Task {
     }
     // TODO MP-4: status/priority a los enums TaskStatus / Priority.
     // TODO MP-8: validación en el constructor + factory estática crear(...).
+    public static Task crear(String title, String description, Priority priority,
+                            LocalDate dueDate, Project project, User assignee)
+            throws TaskValidationException {
+        if (dueDate != null && dueDate.isBefore(LocalDate.now())) {
+            throw new TaskValidationException("La fecha límite esta en el pasado!!!.");
+        }
+        return new Task(title, description, TaskStatus.TODO, priority, dueDate, project, assignee);
+    }
+
     // TODO Integrador: id (Long, null), project, assignee, implements Describible, regla de setStatus.
 
 }
