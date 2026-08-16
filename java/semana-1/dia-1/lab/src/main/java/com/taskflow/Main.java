@@ -45,8 +45,11 @@ public class Main {
                 // ...agrega al menos 3 más...
         };
         String[] estados = {
-                ESTADO_TODO,
-                ESTADO_TODO,
+                ESTADO_DONE,
+                ESTADO_DONE,
+                ESTADO_DONE,
+                ESTADO_IN_PROGRESS,
+                ESTADO_TODO
                 // ...uno por cada título, en el mismo orden...
         };
         String[] prioridades = {
