@@ -11,8 +11,13 @@ public enum TaskStatus {
 
     // TODO MP-4: agrega un campo 'etiqueta' con su constructor y getEtiqueta(). Objetivo:
     //   TODO("Por hacer"), IN_PROGRESS("En curso"), DONE("Hecha");
-    //   private final String etiqueta;
-    //   TaskStatus(String etiqueta) { this.etiqueta = etiqueta; }
-    //   public String getEtiqueta() { return etiqueta; }
+    private final String etiqueta;
+
+      TaskStatus(String etiqueta) {
+          this.etiqueta = etiqueta;
+      }
+    public String getEtiqueta() {
+          return etiqueta;
+      }
     // (Recuerda: la lista de constantes va PRIMERO y termina en ';' antes de los campos.)
 }
