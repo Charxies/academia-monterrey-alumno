@@ -114,7 +114,15 @@ public class Main {
                     //   comparando con .equals(...) — ¡nunca con == !
                     //   Imprime EXACTAMENTE con este formato:
                     //   TODO: n | IN_PROGRESS: n | DONE: n
-                    System.out.println("(TODO 4: aquí va el resumen por estado)");
+                    int doneCount = 0;
+                    int todoCount = 0;
+                    int progCount = 0;
+                    for (String estado:estados){
+                        if(estado.equals(ESTADO_DONE)) doneCount+=1;
+                        if(estado.equals(ESTADO_TODO)) todoCount+=1;
+                        if(estado.equals(ESTADO_IN_PROGRESS)) progCount+=1;
+                    }
+                    System.out.printf("TODO: %d | IN_PROGRESS: %d | DONE: %d", todoCount,progCount,doneCount);
                 }
                 case "3" -> {
                     // TODO 5: mensaje de despedida (la condición del while ya corta el loop).
