@@ -1,6 +1,6 @@
 package com.taskflow.model;
 
-// import java.time.LocalDate;   // lo necesitarás para createdAt
+ import java.time.LocalDate;   // lo necesitarás para createdAt
 
 /**
  * Project — un proyecto dueño de tareas. Es una CLASE (no un record). Se completa en el
