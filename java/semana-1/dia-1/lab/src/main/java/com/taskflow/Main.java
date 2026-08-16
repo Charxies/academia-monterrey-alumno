@@ -55,6 +55,9 @@ public class Main {
         String[] prioridades = {
                 "HIGH",
                 "MED",
+                "MED",
+                "LOW",
+                "HIGH"
                 // ...una por cada título, en el mismo orden...
         };
 
