@@ -37,6 +37,35 @@ public class Task {
     }
 
     // TODO MP-2: private + getters + setters (status, priority) + toString().
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
     // TODO MP-3: dueDate (LocalDate) + estaVencida().
     // TODO MP-4: status/priority a los enums TaskStatus / Priority.
     // TODO MP-8: validación en el constructor + factory estática crear(...).
