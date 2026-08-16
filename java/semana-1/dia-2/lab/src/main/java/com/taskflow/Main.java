@@ -65,6 +65,38 @@ public class Main {
         User demoUser = new User(1L, "charlie.cel", "charlie.cel@proton.me", Role.ADMIN);
         Project demoProyecto = new Project(1L, "Sprint 1", "Sprint inicial del proyecto", demoUser, LocalDate.now());
 
+        // TODO 2: esto se convierte en Task[] + numTareas.
+        Task[] tasks = new Task[20];
+        int numTareas = 0;
+
+        //preload some tasks
+        try{
+            tasks [numTareas++] = new Task("Crear repositorio en GitHub",
+                    "Inicializar repo y hacer el primer commit.", TaskStatus.DONE,
+                    Priority.HIGH, LocalDate.now(), demoProyecto, demoUser);
+
+            tasks [numTareas++] = new Task("Configurar proyecto Maven",
+                    "Agregar pom.xml y dependencias base.", TaskStatus.DONE,
+                    Priority.MED, LocalDate.now(), demoProyecto, demoUser);
+
+            tasks[numTareas++] = new Task("Diseñar modelo de tasks",
+                    "Definir Task, User, Project y enums.", TaskStatus.IN_PROGRESS,
+                    Priority.HIGH, LocalDate.now().minusDays(1), demoProyecto, demoUser);
+
+            tasks[numTareas++] = new Task("Implementar menú de consola",
+                    "Migrar el menú de v0 a la nueva versión POO.", TaskStatus.IN_PROGRESS,
+                    Priority.HIGH, null, demoProyecto, null);
+
+            tasks[numTareas++] = new Task("Escribir tests del dominio",
+                    "Cubrir las reglas de validación de Task.", TaskStatus.TODO,
+                    Priority.MED, LocalDate.now().plusDays(3), demoProyecto, null);
+
+
+        } catch (TaskValidationException e) {
+            System.out.println("Error precargando datos demo: " + e.getMessage());
+            return;
+        }
+
 
         String opcion;
         do {
