@@ -29,6 +29,8 @@ public class Task {
     private TaskStatus status;
     private Priority priority;
     private LocalDate dueDate;
+    private  Project project;
+    private  User assignee;
 
     public Task(String title, String description, TaskStatus status, Priority priority) {
         this.title = title;
