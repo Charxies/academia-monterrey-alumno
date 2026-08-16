@@ -84,6 +84,10 @@ public class Main {
 //        };
 
         Scanner scanner = new Scanner(System.in);
+        //gen user + proy demo
+        User demoUser = new User(1L, "charlie.cel", "charlie.cel@proton.me", Role.ADMIN);
+        Project demoProyecto = new Project(1L, "Sprint 1", "Sprint inicial del proyecto", demoUser, LocalDate.now());
+
 
         String opcion;
         do {
