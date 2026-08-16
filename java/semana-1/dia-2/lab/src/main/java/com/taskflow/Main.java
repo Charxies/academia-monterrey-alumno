@@ -47,9 +47,9 @@ import java.util.Scanner;
 public class Main {
 
     // Constantes de estado de la v0. En v1 MUEREN: los reemplazan los enums TaskStatus/Priority.
-    static final String ESTADO_TODO = "TODO";
-    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
-    static final String ESTADO_DONE = "DONE";
+//    static final String ESTADO_TODO = "TODO";
+//    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
+//    static final String ESTADO_DONE = "DONE";
 
     // ===== STRETCH v0: códigos ANSI para colorear la terminal =====
     static final String ANSI_ROJO = "\u001B[31m";
