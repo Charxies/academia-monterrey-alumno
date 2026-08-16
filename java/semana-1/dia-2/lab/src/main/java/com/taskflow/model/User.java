@@ -11,5 +11,9 @@ package com.taskflow.model;
  *       @Override public String descripcionCorta() { return username + " <" + email + "> · " + role; }
  *   }
  */
-public record User(long id, String username, String email, Role role) {
+public record User(long id, String username, String email, Role role) implements Describible {
+    @Override
+    public String descripcionCorta() {
+        return username + " (" + email +")." + role ;
+    }
 }
