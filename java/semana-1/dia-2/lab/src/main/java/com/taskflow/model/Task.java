@@ -1,7 +1,7 @@
 package com.taskflow.model;
 
  import java.time.LocalDate;                            // lo necesitarás en MP-3
- //import com.taskflow.exception.TaskValidationException;  // lo necesitarás en MP-8
+ import com.taskflow.exception.TaskValidationException;  // lo necesitarás en MP-8
 
 /**
  * Task — entidad central del dominio TaskFlow. La construyes a lo largo del día;
