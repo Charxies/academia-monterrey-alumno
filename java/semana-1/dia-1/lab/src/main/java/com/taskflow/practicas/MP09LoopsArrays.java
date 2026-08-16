@@ -19,15 +19,17 @@ public class MP09LoopsArrays {
         };
 
         // TODO 1: cuenta cuántos elementos son "DONE" con un FOR-EACH:
-        //   int cuentaDone = 0;
-        //   for (String estado : estados) { ... }
+           int cuentaDone = 0;
+           for (String estado : estados) {
+               if (estado.equals("DONE")) cuentaDone += 1;
+           }
         //   Recuerda: la comparación es con .equals("DONE"), nunca con ==.
 
         // TODO 2: imprime "Tareas DONE: X de Y" usando tu contador y estados.length.
         //   (Con este array la respuesta correcta es 3 de 8.)
-
+        System.out.printf("Tareas DONE: %d de %d\n", cuentaDone,estados.length);
         // TODO 3: imprime la lista NUMERADA con un for clásico (necesitas el índice):
-        //   for (int i = 0; i < estados.length; i++) { ... }
+           for (int i = 0; i < estados.length; i++) { System.out.printf("%d.%s\n",i+1,estados [i]); }
         //   Formato de cada línea:  "1. TODO"  (ojo: i empieza en 0, la lista en 1).
 
         // TODO 4 (para pensar): ¿por qué el TODO 1 usó for-each y el TODO 3 un for

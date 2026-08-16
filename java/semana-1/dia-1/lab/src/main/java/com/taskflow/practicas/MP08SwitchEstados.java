@@ -17,19 +17,21 @@ public class MP08SwitchEstados {
 
     public static void main(String[] args) {
         // TODO 1: declara String estado = "IN_PROGRESS";
+        String estado = "DONE";
         //   (después pruébalo con "TODO", "DONE" y un valor inventado como "CANCELLED")
 
         // TODO 2: escribe el switch EXPRESSION. Forma general:
-        //   String etiqueta = switch (estado) {
-        //       case "TODO" -> "Por hacer";
-        //       ...
-        //       default -> ...;
-        //   };
+           String etiqueta = switch (estado) {
+               case "TODO" -> "Por hacer";
+               case "DONE" -> "Hecho";
+               case "CANCELLED" -> "cancelado";
+               default -> " En progreso";
+           };
         //   Nota el ; al final: es una EXPRESIÓN que devuelve un valor.
         //   Sin break, sin fall-through, y el compilador te obliga a cubrir todo.
 
         // TODO 3: imprime  estado + " -> " + etiqueta
-
+        System.out.printf("estado: %s \n",etiqueta);
         // TODO 4 (reto opcional): replica el bug del switch CLÁSICO: escribe un
         //   switch clásico (case X: ... break;) sobre un int y quítale UN break.
         //   Corre y observa cómo la ejecución "cae" al siguiente case (fall-through).

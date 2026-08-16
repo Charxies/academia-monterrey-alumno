@@ -23,25 +23,38 @@ public class MP04Variables {
         //   boolean completada             (p. ej. false)
         //   char    inicialPrioridad       (p. ej. 'H' — char usa comillas SIMPLES)
         //   String  titulo                 (p. ej. "Configurar proyecto Maven")
-
+        int diasRestantes = 4;
+        long totalTareasHistoricas = 1_500_000L;
+        double horasEstimadas = 5.5;
+        boolean completado = false;
+        char inicialPrioridad = 'X';
+        String titulo = "Configurar proyecto Maven";
         // TODO 2: imprime título y días restantes con CONCATENACIÓN (+).
         //   Pista: System.out.println("Tarea: " + titulo + " | días: " + diasRestantes);
-
+        System.out.println("Titulo: " + titulo + " || Dias Restantes: "+ diasRestantes);
         // TODO 3: imprime horas estimadas y completada con printf.
         //   Códigos: %s String, %d entero, %.1f double con 1 decimal, %b boolean,
         //   %c char, %n salto de línea portable.
         //   Pista: System.out.printf("Horas: %.1f | completada: %b%n", ...);
-
+        System.out.printf("Horas Estimadas: %.1f || completada: %b%n", horasEstimadas, completado);
         // TODO 4: arma un resumen multilínea con un TEXT BLOCK ("""...""")
         //   y rellénalo con .formatted(titulo, diasRestantes, horasEstimadas).
+        System.out.println(""" 
+                ##Text Block ##
+                titulo = %s
+                Dias Restantes = %d
+                horasEstimadas = %.1f
+                """.formatted(titulo,diasRestantes,horasEstimadas));
 
         // TODO 5: declara una variable con var (el compilador infiere el tipo).
         //   Pista: var proyecto = "TaskFlow";   // infiere String
         //   Regla del curso: usa var solo cuando el tipo sea OBVIO al leer la línea.
-
+        var proyecto = "taskflow";
+        System.out.println("proyecto = " + proyecto);
         // TODO 6: declara una constante con final y UPPER_SNAKE_CASE, e imprímela.
         //   Pista: final int MAX_TAREAS_POR_DIA = 10;
-
+        final int DIAS_DE_ENTREGA_MAXIMA = 8;
+        System.out.print(DIAS_DE_ENTREGA_MAXIMA);
         // ================== ERRORES A PROPÓSITO (uno a la vez) ==================
         // TODO 7: descomenta la siguiente línea, compila y LEE el error completo:
         //   "incompatible types: String cannot be converted to int".

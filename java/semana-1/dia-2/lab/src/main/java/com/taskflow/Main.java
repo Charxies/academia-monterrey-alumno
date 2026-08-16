@@ -47,9 +47,9 @@ import java.util.Scanner;
 public class Main {
 
     // Constantes de estado de la v0. En v1 MUEREN: los reemplazan los enums TaskStatus/Priority.
-    static final String ESTADO_TODO = "TODO";
-    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
-    static final String ESTADO_DONE = "DONE";
+//    static final String ESTADO_TODO = "TODO";
+//    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
+//    static final String ESTADO_DONE = "DONE";
 
     // ===== STRETCH v0: códigos ANSI para colorear la terminal =====
     static final String ANSI_ROJO = "\u001B[31m";
@@ -58,32 +58,45 @@ public class Main {
     public static void main(String[] args) {
         // v0: arrays PARALELOS (el índice i de los TRES describe la MISMA tarea).
         // TODO 2: esto se convierte en Task[] + numTareas.
-        String[] titulos = {
-                "Crear repositorio en GitHub",
-                "Configurar proyecto Maven",
-                "Diseñar modelo de tareas",
-                "Implementar menú de consola",
-                "Escribir tests del dominio",
-                "Desplegar API en AWS"
-        };
-        String[] estados = {
-                ESTADO_DONE,
-                ESTADO_DONE,
-                ESTADO_IN_PROGRESS,
-                ESTADO_IN_PROGRESS,
-                ESTADO_TODO,
-                ESTADO_TODO
-        };
-        String[] prioridades = {
-                "HIGH",
-                "MED",
-                "HIGH",
-                "HIGH",
-                "MED",
-                "LOW"
-        };
+//
 
         Scanner scanner = new Scanner(System.in);
+        //gen user + proy demo
+        User demoUser = new User(1L, "charlie.cel", "charlie.cel@proton.me", Role.ADMIN);
+        Project demoProyecto = new Project(1L, "Sprint 1", "Sprint inicial del proyecto", demoUser, LocalDate.now());
+
+        // TODO 2: esto se convierte en Task[] + numTareas.
+        Task[] tasks = new Task[20];
+        int numTareas = 0;
+
+        //preload some tasks
+        try{
+            tasks [numTareas++] = new Task("Crear repositorio en GitHub",
+                    "Inicializar repo y hacer el primer commit.", TaskStatus.DONE,
+                    Priority.HIGH, LocalDate.now(), demoProyecto, demoUser);
+
+            tasks [numTareas++] = new Task("Configurar proyecto Maven",
+                    "Agregar pom.xml y dependencias base.", TaskStatus.DONE,
+                    Priority.MED, LocalDate.now(), demoProyecto, demoUser);
+
+            tasks[numTareas++] = new Task("Diseñar modelo de tasks",
+                    "Definir Task, User, Project y enums.", TaskStatus.IN_PROGRESS,
+                    Priority.HIGH, LocalDate.now().minusDays(1), demoProyecto, demoUser);
+
+            tasks[numTareas++] = new Task("Implementar menú de consola",
+                    "Migrar el menú de v0 a la nueva versión POO.", TaskStatus.IN_PROGRESS,
+                    Priority.HIGH, null, demoProyecto, null);
+
+            tasks[numTareas++] = new Task("Escribir tests del dominio",
+                    "Cubrir las reglas de validación de Task.", TaskStatus.TODO,
+                    Priority.MED, LocalDate.now().plusDays(3), demoProyecto, null);
+
+
+        } catch (TaskValidationException e) {
+            System.out.println("Error precargando datos demo: " + e.getMessage());
+            return;
+        }
+
 
         String opcion;
         do {

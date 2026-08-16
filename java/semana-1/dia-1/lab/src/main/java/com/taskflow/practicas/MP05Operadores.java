@@ -15,20 +15,23 @@ public class MP05Operadores {
     public static void main(String[] args) {
         // TODO 1: declara los minutos estimados de 3 tareas:
         //   int min1 = 90, min2 = 85, min3 = 78;
-
+        int min1 = 90, min2 = 85, min3  = 78;
         // TODO 2: calcula el promedio "ingenuo" en un int: (min1 + min2 + min3) / 3
         //   e imprímelo. La suma es 253, así que esperarías 84.33... ¿qué imprime?
         //   int/int DESCARTA los decimales en silencio. No avisa. No redondea.
-
+        int prom = (min1 + min2 + min3)/3;
+        System.out.print(prom);//regresara un int sin decimales
         // TODO 3: comprueba la trampa mínima imprimiendo estas dos divisiones:
-        //   System.out.println(5 / 2);     // ¿2 o 2.5?
-        //   System.out.println(5 / 2.0);   // basta UN double para que la división sea double
+           System.out.println(5 / 2);     // ¿2 o 2.5?
+           System.out.println(5 / 2.0);   // basta UN double para que la división sea double
 
         // TODO 4: calcula el promedio CORRECTO en un double, de las dos formas:
         //   a) dividiendo entre 3.0
         //   b) casteando: (double) (min1 + min2 + min3) / 3
         //   Imprímelo con printf y 2 decimales: %.2f
-
+        double promDouble = (3.7 + 4.2 + 1.1 )/3;
+        double promDoubleCast = (double) (min1+min2+min3)/3;
+        System.out.printf("prom double 1 = %.2f || prom double cast = %.2f \n", promDouble, promDoubleCast);
         // TODO 5: convierte un double a int con cast explícito:
         //   double horasReales = 6.9;
         //   int horasEnteras = (int) horasReales;

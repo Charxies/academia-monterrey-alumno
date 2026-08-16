@@ -15,25 +15,29 @@ public class MP06Strings {
 
     public static void main(String[] args) {
         // TODO 1: declara String titulo = "Implementar login con JWT";
-
+        String titulo = "Implementar login con JWT";
         // TODO 2: imprime, uno por línea:
         //   - titulo.length()            ¿cuántos caracteres tiene?
         //   - titulo.toUpperCase()       (ojo: NO modifica titulo, devuelve uno nuevo)
         //   - titulo.contains("JWT")     ¿contiene "JWT"? ¿y "jwt"? pruébalo
         //   - titulo.substring(0, 11)    los primeros 11 caracteres
         //   - "   ".isBlank()            ¿un String de puros espacios está "en blanco"?
-
+        System.out.printf(
+                " Titulo lenght : %d \n Titulo Upper: %s \n Titulo Lower: %s \n Titulo JWT?: %b \n Titulo sub: %s\n \"  \" blank?: %b\n",
+                titulo.length(), titulo.toUpperCase(), titulo.toLowerCase(), titulo.contains("JWT"), titulo.substring(0,11), ("  ").isBlank()
+        );
         // TODO 3: el trap de == — reprodúcelo EXACTAMENTE así:
-        //   String estado1 = "DONE";
-        //   String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
-        //   String estado2 = "DO" + sufijo;     // se construye en tiempo de ejecución
+           String estado1 = "DONE";
+           String sufijo = "NE";               // OJO: sin final, es clave para el ejemplo
+           String estado2 = "DO" + sufijo;     // se construye en tiempo de ejecución
         //   Imprime (estado1 == estado2) y estado1.equals(estado2).
+        System.out.printf("est1 == est2: %b \n est1.equals(est2): %b\n",(estado1 == estado2), estado1.equals(estado2));
         //   ¿Por qué == da false si "se ven" iguales?
         //   Porque == compara REFERENCIAS (¿es el mismo objeto?) y equals compara CONTENIDO.
 
         // TODO 4: escribe en un comentario tu regla personal de una línea para
         //   nunca volver a caer en esto. (Sugerencia: "Strings SIEMPRE con equals".)
-
+        // "Comparar Strings siempre con Equals,anotado"
         System.out.println("MP-6: listo cuando tu == dé false y tu equals dé true.");
     }
 }

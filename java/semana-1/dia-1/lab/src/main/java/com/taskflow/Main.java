@@ -26,8 +26,8 @@ public class Main {
     //         Convención: static final + UPPER_SNAKE_CASE.
     //         Úsalas en TODO el archivo: nada de escribir "DONE" suelto por ahí.
     static final String ESTADO_TODO = "TODO";
-    // static final String ESTADO_IN_PROGRESS = ...
-    // static final String ESTADO_DONE = ...
+    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
+    static final String ESTADO_DONE = "DONE";
 
     public static void main(String[] args) {
         // TODO 2: completa los arrays PARALELOS hasta tener MÍNIMO 5 tareas.
@@ -39,16 +39,25 @@ public class Main {
         String[] titulos = {
                 "Crear repositorio en GitHub",
                 "Configurar proyecto Maven",
+                "Clonar repositorio a local",
+                "Checar Endpoints",
+                "Deployear el proyecto"
                 // ...agrega al menos 3 más...
         };
         String[] estados = {
-                ESTADO_TODO,
-                ESTADO_TODO,
+                ESTADO_DONE,
+                ESTADO_DONE,
+                ESTADO_DONE,
+                ESTADO_IN_PROGRESS,
+                ESTADO_TODO
                 // ...uno por cada título, en el mismo orden...
         };
         String[] prioridades = {
                 "HIGH",
                 "MED",
+                "MED",
+                "LOW",
+                "HIGH"
                 // ...una por cada título, en el mismo orden...
         };
 
@@ -84,7 +93,20 @@ public class Main {
                     //       Pista: String etiqueta = switch (estados[i]) { ... };
                     //   3d. Imprime cada fila con printf: "%-30s %-15s %-10s%n"
                     //       (%-30s = String alineado a la izquierda en 30 espacios).
-                    System.out.println("(TODO 3: aquí va la tabla de tareas)");
+                    System.out.print(""" 
+                        ----------------------------------------------------------
+                        ||         TITULO          |      ESTADO    |    PRIO   ||
+                        """);
+                    for (int i = 0; i < titulos.length; i++){
+                        String etiqueta = switch (estados [i]) {
+                            case ESTADO_TODO -> "Por hacer";
+                            case ESTADO_DONE-> "Hecho";
+                            case ESTADO_IN_PROGRESS -> "En progreso";
+                            default -> estados[i];
+                        };
+                        System.out.printf("||%-28s-%-16s-%-8s||%n", etiqueta,estados[i],prioridades[i]);
+                    }
+                    System.out.print("----------------------------------------------------------");
                 }
                 case "2" -> {
                     // TODO 4: cuenta cuántas tareas hay de cada estado.
@@ -92,11 +114,19 @@ public class Main {
                     //   comparando con .equals(...) — ¡nunca con == !
                     //   Imprime EXACTAMENTE con este formato:
                     //   TODO: n | IN_PROGRESS: n | DONE: n
-                    System.out.println("(TODO 4: aquí va el resumen por estado)");
+                    int doneCount = 0;
+                    int todoCount = 0;
+                    int progCount = 0;
+                    for (String estado:estados){
+                        if(estado.equals(ESTADO_DONE)) doneCount+=1;
+                        if(estado.equals(ESTADO_TODO)) todoCount+=1;
+                        if(estado.equals(ESTADO_IN_PROGRESS)) progCount+=1;
+                    }
+                    System.out.printf("TODO: %d | IN_PROGRESS: %d | DONE: %d", todoCount,progCount,doneCount);
                 }
                 case "3" -> {
                     // TODO 5: mensaje de despedida (la condición del while ya corta el loop).
-                    System.out.println("(TODO 5: despedida)");
+                    System.out.println("(TODO 5: ADIOS!)");
                 }
                 default -> {
                     // TODO 6: mensaje claro de opción inválida. No hace falta más:
