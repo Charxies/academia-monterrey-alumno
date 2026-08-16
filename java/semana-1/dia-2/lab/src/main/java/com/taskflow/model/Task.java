@@ -38,7 +38,8 @@ public class Task {
         if (title == null || title.length() < 3 || title.length() > 120){
             throw  new TaskValidationException("el titulo no puede ser vacio, y tener entre 3 y 120 caracteres");
         }
-    } {
+    }
+    {
         this.title = title;
         this.description = description;
         this.status = status;
