@@ -39,6 +39,9 @@ public class Main {
         String[] titulos = {
                 "Crear repositorio en GitHub",
                 "Configurar proyecto Maven",
+                "Clonar repositorio a local",
+                "Checar Endpoints",
+                "Deployear el proyecto"
                 // ...agrega al menos 3 más...
         };
         String[] estados = {
