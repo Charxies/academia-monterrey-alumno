@@ -93,7 +93,20 @@ public class Main {
                     //       Pista: String etiqueta = switch (estados[i]) { ... };
                     //   3d. Imprime cada fila con printf: "%-30s %-15s %-10s%n"
                     //       (%-30s = String alineado a la izquierda en 30 espacios).
-                    System.out.println("(TODO 3: aquí va la tabla de tareas)");
+                    System.out.print(""" 
+                        ----------------------------------------------------------
+                        ||         TITULO          |      ESTADO    |    PRIO   ||
+                        """);
+                    for (int i = 0; i < titulos.length; i++){
+                        String etiqueta = switch (estados [i]) {
+                            case ESTADO_TODO -> "Por hacer";
+                            case ESTADO_DONE-> "Hecho";
+                            case ESTADO_IN_PROGRESS -> "En progreso";
+                            default -> estados[i];
+                        };
+                        System.out.printf("||%-28s-%-16s-%-8s||%n", etiqueta,estados[i],prioridades[i]);
+                    }
+                    System.out.print("----------------------------------------------------------");
                 }
                 case "2" -> {
                     // TODO 4: cuenta cuántas tareas hay de cada estado.
