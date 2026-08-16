@@ -58,30 +58,7 @@ public class Main {
     public static void main(String[] args) {
         // v0: arrays PARALELOS (el índice i de los TRES describe la MISMA tarea).
         // TODO 2: esto se convierte en Task[] + numTareas.
-//        String[] titulos = {
-//                "Crear repositorio en GitHub",
-//                "Configurar proyecto Maven",
-//                "Diseñar modelo de tareas",
-//                "Implementar menú de consola",
-//                "Escribir tests del dominio",
-//                "Desplegar API en AWS"
-//        };
-//        String[] estados = {
-//                ESTADO_DONE,
-//                ESTADO_DONE,
-//                ESTADO_IN_PROGRESS,
-//                ESTADO_IN_PROGRESS,
-//                ESTADO_TODO,
-//                ESTADO_TODO
-//        };
-//        String[] prioridades = {
-//                "HIGH",
-//                "MED",
-//                "HIGH",
-//                "HIGH",
-//                "MED",
-//                "LOW"
-//        };
+//
 
         Scanner scanner = new Scanner(System.in);
         //gen user + proy demo
