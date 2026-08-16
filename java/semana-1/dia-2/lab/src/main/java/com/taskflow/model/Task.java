@@ -28,6 +28,7 @@ public class Task {
     private String description;
     private TaskStatus status;
     private Priority priority;
+    private LocalDate dueDate;
 
     public Task(String title, String description, TaskStatus status, Priority priority) {
         this.title = title;
@@ -67,6 +68,9 @@ public class Task {
         return super.toString();
     }
     // TODO MP-3: dueDate (LocalDate) + estaVencida().
+    public boolean estaVencida(){
+        return dueDate != null && dueDate.isBefore(LocalDate.now()) && status != TaskStatus.DONE;
+    }
     // TODO MP-4: status/priority a los enums TaskStatus / Priority.
     // TODO MP-8: validación en el constructor + factory estática crear(...).
     // TODO Integrador: id (Long, null), project, assignee, implements Describible, regla de setStatus.
