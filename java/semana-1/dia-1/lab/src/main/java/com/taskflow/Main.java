@@ -26,8 +26,8 @@ public class Main {
     //         Convención: static final + UPPER_SNAKE_CASE.
     //         Úsalas en TODO el archivo: nada de escribir "DONE" suelto por ahí.
     static final String ESTADO_TODO = "TODO";
-    // static final String ESTADO_IN_PROGRESS = ...
-    // static final String ESTADO_DONE = ...
+    static final String ESTADO_IN_PROGRESS = "IN_PROGRESS";
+    static final String ESTADO_DONE = "DONE";
 
     public static void main(String[] args) {
         // TODO 2: completa los arrays PARALELOS hasta tener MÍNIMO 5 tareas.
