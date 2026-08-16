@@ -5,9 +5,9 @@ package com.taskflow.model;
  * compilador (adiós a los String mágicos de D1: nadie mete un "DONEE").
  */
 public enum TaskStatus {
-    TODO,
-    IN_PROGRESS,
-    DONE;
+    TODO("Por hacer"),
+    IN_PROGRESS("En progreso"),
+    DONE("Terminada");
 
     // TODO MP-4: agrega un campo 'etiqueta' con su constructor y getEtiqueta(). Objetivo:
     //   TODO("Por hacer"), IN_PROGRESS("En curso"), DONE("Hecha");
