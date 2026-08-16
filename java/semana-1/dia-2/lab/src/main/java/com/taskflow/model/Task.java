@@ -65,7 +65,13 @@ public class Task {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Task{" + " title='" + title + "'"
+                + ", status=" + status
+                + ", priority=" + priority
+                + ", dueDate=" + dueDate
+                + ", project=" + (project != null ? project.getName() : "null")
+                + ", assignee=" + (assignee != null ? assignee.username() : "null")
+                + "}";
     }
     // TODO MP-3: dueDate (LocalDate) + estaVencida().
     public boolean estaVencida(){
