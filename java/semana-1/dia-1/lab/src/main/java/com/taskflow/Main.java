@@ -126,7 +126,7 @@ public class Main {
                 }
                 case "3" -> {
                     // TODO 5: mensaje de despedida (la condición del while ya corta el loop).
-                    System.out.println("(TODO 5: despedida)");
+                    System.out.println("(TODO 5: ADIOS!)");
                 }
                 default -> {
                     // TODO 6: mensaje claro de opción inválida. No hace falta más:
