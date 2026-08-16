@@ -42,6 +42,10 @@ public class Task {
         this.description = description;
         this.status = status;
         this.priority = priority;
+        this.dueDate = dueDate;
+        this.project = project;
+        this.assignee = assignee;
+
     }
 
     // TODO MP-2: private + getters + setters (status, priority) + toString().
