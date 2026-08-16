@@ -29,8 +29,9 @@ public class Task {
     private TaskStatus status;
     private Priority priority;
     private LocalDate dueDate;
-    private  Project project;
-    private  User assignee;
+    private Project project;
+    private User assignee;
+    private Long id; // persistance check
 
     public Task(String title, String description, TaskStatus status, Priority priority,
                 LocalDate dueDate, Project project, User assignee) throws TaskValidationException{
