@@ -24,6 +24,18 @@ package com.taskflow.model;
 public class Task {
 
     // TODO MP-1: declara los campos y escribe el constructor.
+    private String title;
+    private String description;
+    private TaskStatus status;
+    private Priority priority;
+
+    public Task(String title, String description, TaskStatus status, Priority priority) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+    }
+
     // TODO MP-2: private + getters + setters (status, priority) + toString().
     // TODO MP-3: dueDate (LocalDate) + estaVencida().
     // TODO MP-4: status/priority a los enums TaskStatus / Priority.
