@@ -35,7 +35,7 @@ public class Task {
     public Task(String title, String description, TaskStatus status, Priority priority,
                 LocalDate dueDate, Project project, User assignee) throws TaskValidationException{
         if (title == null || title.length() < 3 || title.length() > 120){
-            throw  new TaskValidationException("el titulo no puede ser vacio");
+            throw  new TaskValidationException("el titulo no puede ser vacio, y tener entre 3 y 120 caracteres");
         }
     } {
         this.title = title;
